@@ -15,7 +15,7 @@ function save_and_patch() {
 function armv8_procedure() {
   save_current
 
-	echo "[INFO] Downloading patched ffmpeg files to /tmp/ffmpeg"
+	echo "[INFO] Downloading patched ffmpeg files to /var/packages/VideoStation/target/lib"
 	echo ""
 
 	declare -a ffmpegfiles=(
@@ -29,14 +29,15 @@ function armv8_procedure() {
 		"libswscale.so.3"
 	)
 
-	mkdir /tmp/ffmpeg
+	if [[! -d "/var/packages/VideoStation/target/lib/ffmpeg"]]; then
+	  mkdir "/var/packages/VideoStation/target/lib/ffmpeg"
+  fi
 
 	for file in "${ffmpegfiles[@]}"
 	do
-		wget -O "/tmp/ffmpeg/$file" "https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/ffmpeg/$file?raw=true"
+	  echo "[INFO] Downloading $file..."
+		wget -q -O "/var/packages/VideoStation/target/lib/ffmpeg/$file" "https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/ffmpeg/$file?raw=true"
 	done
-
-	mv /tmp/ffmpeg /var/packages/VideoStation/target/lib/
 
   save_and_patch
 
