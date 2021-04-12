@@ -29,13 +29,13 @@ function armv8_procedure() {
 		"libswscale.so.3"
 	)
 
-	if [[! -d "/var/packages/VideoStation/target/lib/ffmpeg"]]; then
-		mkdir "/var/packages/VideoStation/target/lib/ffmpeg"
+	if [[ ! -d /var/packages/VideoStation/target/lib/ffmpeg ]]; then
+		mkdir /var/packages/VideoStation/target/lib/ffmpeg
 	fi
 
 	for file in "${ffmpegfiles[@]}"
 	do
-		echo "[INFO] Downloading $file..."
+		echo "[INFO] Downloading $file ..."
 		wget -q -O "/var/packages/VideoStation/target/lib/ffmpeg/$file" "https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/ffmpeg/$file?raw=true"
 	done
 
