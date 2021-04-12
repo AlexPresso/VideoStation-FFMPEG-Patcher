@@ -20,4 +20,4 @@ This patcher is designed to simplify the installation steps from this [Gist](htt
 - Use the command `sudo -i` to switch to root user
 - Use the folowing command to execute the patch: `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`
 - Restart VideoStation (stop & start from Package Center)
-- VideoStation will need to be repatched everytime you update it (and when you update DSM)
+- VideoStation will have to be repatched everytime you update it (and when you update DSM)
