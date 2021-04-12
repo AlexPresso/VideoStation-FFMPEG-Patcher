@@ -32,10 +32,10 @@ function run() {
 
 	mv /tmp/ffmpeg /var/packages/VideoStation/target/lib/
 
-	cp -n /var/packages/VideoStation/target/lib/libsysnovte.so /var/packages/VideoStation/target/lib/libsynovte.so.orig
+	cp -n /var/packages/VideoStation/target/lib/libsynovte.so /var/packages/VideoStation/target/lib/libsynovte.so.orig
 	chown VideoStation:VideoStation /var/packages/VideoStation/target/lib/libsynovte.so.orig
 
-	sed -i -e 's/eac3/3cae' -e 's/dts/std' -e 's/truehd/dheurt/' /var/packages/VideoStation/target/lib/libsynovte.so
+	sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' /var/packages/VideoStation/target/lib/libsynovte.so
 
 	echo ""
 	echo "[SUCCESS] Done patching, please restart VideoStation (stop and start from package center)"
