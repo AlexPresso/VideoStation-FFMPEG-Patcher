@@ -4,7 +4,7 @@ function run() {
 	cpumodel='ARMv8';
 	cpuinfo=$(cat /proc/cpuinfo | grep 'model name' | uniq);
 
-	if [[ $cpuinfo != *$cpumodel ]]; then
+	if [[ $cpuinfo != *$cpumodel* ]]; then
 		echo "[ERROR] This script is only intended for $cpumodel CPUs"
 		return -1
 	fi
