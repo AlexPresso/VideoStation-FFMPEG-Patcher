@@ -1,11 +1,10 @@
 #!/bin/bash
 
 function run() {
-	cpumodel='ARMv8';
 	cpuinfo=$(cat /proc/cpuinfo | grep 'model name' | uniq);
 
-	if [[ $cpuinfo != *$cpumodel* ]]; then
-		echo "[ERROR] This script is only intended for $cpumodel CPUs"
+	if [[ ! $cpuinfo =~ "ARMv8" ]]; then
+		echo "[ERROR] This script is only intended for ARMv8 CPUs"
 		return -1
 	fi
 
