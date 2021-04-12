@@ -28,11 +28,10 @@ function armv8_procedure() {
 		"libswresample.so.1"
 		"libswscale.so.3"
 	);
-	ffmpegdirectory="/var/packages/VideoStation/target/lib/ffmpeg"
 
-	if [[ ! -d "$ffmpegdirectory" ]]; then
-		echo "[INFO] Creating $ffmpegdirectory directory"
-		mkdir "$ffmpegdirectory"
+	if [[ ! -d /var/packages/VideoStation/target/lib/ffmpeg ]]; then
+		echo "[INFO] Creating ffmpeg directory"
+		mkdir /var/packages/VideoStation/target/lib/ffmpeg
 	fi
 
 	for file in "${ffmpegfiles[@]}"
