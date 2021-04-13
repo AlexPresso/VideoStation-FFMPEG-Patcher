@@ -15,9 +15,10 @@ This patcher is designed to simplify the installation steps from this [Gist](htt
 - SynoCommunity ffmpeg 4.2.1-23 (and above) ([help](https://synocommunity.com/#easy-install))
 
 ## Instructions
-- Check that you meet the required dependencies
+- Check that you meet the required [dependencies](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#dependencies)
 - Connect to your NAS using SSH (admin user required) ([help](https://www.synology.com/en-global/knowledgebase/DSM/tutorial/General_Setup/How_to_login_to_DSM_with_root_permission_via_SSH_Telnet))
 - Use the command `sudo -i` to switch to root user
 - Use the folowing command to execute the patch: `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`
 - Restart VideoStation (stop & start from Package Center)
 - VideoStation will have to be repatched everytime you update it (and when you update DSM)
+
