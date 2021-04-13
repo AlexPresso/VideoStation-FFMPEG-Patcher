@@ -46,7 +46,7 @@ function others_procedure() {
 	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
 	mv -n /var/packages/VideoStation/target/bin/ffmpeg /var/packages/VideoStation/target/bin/ffmpeg.orig
 
-	echo "[INFO] Creating ffmpeg-wrapper (using SynoComunity ffmpeg, make sure you installed it)"
+	echo "[INFO] Creating ffmpeg-wrapper (using SynoCommunity ffmpeg, make sure you installed it)"
   	wget -q -O - https://gist.githubusercontent.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e/raw/ffmpeg-wrapper > /var/packages/VideoStation/target/bin/ffmpeg
 
   	chown root:VideoStation /var/packages/VideoStation/target/bin/ffmpeg
