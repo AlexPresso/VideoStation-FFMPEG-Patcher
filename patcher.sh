@@ -62,6 +62,9 @@ function others_procedure() {
 	
 	mv /var/packages/CodecPack/target/bin/ffmpeg41  /var/packages/CodecPack/target/bin/ffmpeg41.orig
 	cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg41
+	
+	echo ""
+	echo "[SUCCESS] Done patching, please restart VideoStation (stop and start from package center)"
 }
 
 if [[ $(cat /proc/cpuinfo | grep 'model name' | uniq) =~ "ARMv8" ]]; then
