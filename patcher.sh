@@ -56,6 +56,9 @@ function others_procedure() {
   	chmod u+s /var/packages/VideoStation/target/bin/ffmpeg
 
   	save_and_patch
+	
+	mv /var/packages/CodecPack/target/bin/ffmpeg33  /var/packages/CodecPack/target/bin/ffmpeg33.orig
+	cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg33
 }
 
 if [[ $(cat /proc/cpuinfo | grep 'model name' | uniq) =~ "ARMv8" ]]; then
