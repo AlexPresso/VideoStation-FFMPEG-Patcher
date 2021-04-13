@@ -1,10 +1,5 @@
 #!/bin/bash
 
-function save_current() {
-	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
-	mv -n /var/packages/VideoStation/target/lib/ffmpeg /var/packages/VideoStation/target/lib/ffmpeg.orig
-}
-
 function save_and_patch() {
 	cp -n /var/packages/VideoStation/target/lib/libsynovte.so /var/packages/VideoStation/target/lib/libsynovte.so.orig
 	chown VideoStation:VideoStation /var/packages/VideoStation/target/lib/libsynovte.so.orig
@@ -13,7 +8,8 @@ function save_and_patch() {
 }
 
 function armv8_procedure() {
-	save_current
+	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
+	mv -n /var/packages/VideoStation/target/lib/ffmpeg /var/packages/VideoStation/target/lib/ffmpeg.orig
 
 	echo "[INFO] Downloading patched ffmpeg files to /var/packages/VideoStation/target/lib"
 	echo ""
@@ -47,22 +43,30 @@ function armv8_procedure() {
 }
 
 function others_procedure() {
-  	save_current
+	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
+	mv -n /var/packages/VideoStation/target/bin/ffmpeg /var/packages/VideoStation/target/bin/ffmpeg.orig
 
-  	wget -O - https://gist.githubusercontent.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e/raw/ffmpeg-wrapper > /var/packages/VideoStation/target/bin/ffmpeg
+	echo "[INFO] Creating ffmpeg-wrapper (using SynoComunity ffmpeg, make sure you installed it)"
+  	wget -q -O - https://gist.githubusercontent.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e/raw/ffmpeg-wrapper > /var/packages/VideoStation/target/bin/ffmpeg
 
   	chown root:VideoStation /var/packages/VideoStation/target/bin/ffmpeg
   	chmod 750 /var/packages/VideoStation/target/bin/ffmpeg
   	chmod u+s /var/packages/VideoStation/target/bin/ffmpeg
 
   	save_and_patch
-	
-	mv /var/packages/CodecPack/target/bin/ffmpeg33  /var/packages/CodecPack/target/bin/ffmpeg33.orig
-	cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg33
-	
-	mv /var/packages/CodecPack/target/bin/ffmpeg41  /var/packages/CodecPack/target/bin/ffmpeg41.orig
-	cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg41
-	
+
+  	if [[ -d /var/packages/CodecPack/target/bin/ffmpeg33 ]]; then
+  		echo "[INFO] Patching CodecPack ffmpeg33"
+		mv /var/packages/CodecPack/target/bin/ffmpeg33 /var/packages/CodecPack/target/bin/ffmpeg33.orig
+		cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg33
+	fi
+
+	if [[ -d /var/packages/CodecPack/target/bin/ffmpeg41 ]]; then
+		echo "[INFO] Patching CodecPack ffmpeg41"
+		mv /var/packages/CodecPack/target/bin/ffmpeg41 /var/packages/CodecPack/target/bin/ffmpeg41.orig
+		cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg41
+	fi
+
 	echo ""
 	echo "[SUCCESS] Done patching, please restart VideoStation (stop and start from package center)"
 }
