@@ -1,5 +1,9 @@
 # VideoStation-FFMPEG-Patcher 
 
+<p>
+  <img src="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/banner.png?raw=true" height=200px alt="Banner">
+</p>
+
 This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the ffmpeg library files by the one of VideoStation-2.3.4-1468 (which supported those formats).
 
 ## Supported architectures
