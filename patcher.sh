@@ -1,5 +1,15 @@
 #!/bin/bash
 
+function restart_videostation() {
+	if [[ -d /var/packages/CodecPack/target/bin ]]; then
+  		echo "[INFO] Restarting CodecPack"
+		synopkg restart CodecPack
+	fi
+
+	echo "[INFO] Restarting VideoStation..."
+	synopkg restart VideoStation
+}
+
 function save_and_patch() {
 	cp -n /var/packages/VideoStation/target/lib/libsynovte.so /var/packages/VideoStation/target/lib/libsynovte.so.orig
 	chown VideoStation:VideoStation /var/packages/VideoStation/target/lib/libsynovte.so.orig
@@ -37,38 +47,40 @@ function armv8_procedure() {
 	done
 
   	save_and_patch
+  	restart_videostation
 
 	echo ""
-	echo "[SUCCESS] Done patching, please restart VideoStation (stop and start from package center)"
+	echo "[SUCCESS] Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
 }
 
 function others_procedure() {
 	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
 	mv -n /var/packages/VideoStation/target/bin/ffmpeg /var/packages/VideoStation/target/bin/ffmpeg.orig
 
-	echo "[INFO] Creating ffmpeg-wrapper (using SynoCommunity ffmpeg, make sure you installed it)"
-  	wget -q -O - https://gist.githubusercontent.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e/raw/ffmpeg-wrapper > /var/packages/VideoStation/target/bin/ffmpeg
+	echo "[INFO] Downloading ffmpeg-wrapper for VideoStation"
+	wget -q -O - https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/ffmpeg-wrapper.sh?raw=true > /var/packages/VideoStation/target/bin/ffmpeg
 
   	chown root:VideoStation /var/packages/VideoStation/target/bin/ffmpeg
   	chmod 750 /var/packages/VideoStation/target/bin/ffmpeg
   	chmod u+s /var/packages/VideoStation/target/bin/ffmpeg
 
-  	save_and_patch
+  	if [[ -d /var/packages/CodecPack/target/bin ]]; then
+  		echo "[INFO] Detected Advanced Media Extensions"
 
-  	if [[ -d /var/packages/CodecPack/target/bin/ffmpeg33 ]]; then
-  		echo "[INFO] Patching CodecPack ffmpeg33"
+  		echo "[INFO] Saving current Advanced Media Extensions ffmpeg33 as ffmpeg33.orig"
 		mv /var/packages/CodecPack/target/bin/ffmpeg33 /var/packages/CodecPack/target/bin/ffmpeg33.orig
+
+		echo "[INFO] Copying VideoStation's ffmpeg to CodecPack ffmpeg33"
 		cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg33
+
+		chmod 755 /var/packages/CodecPack/target/bin/ffmpeg33
 	fi
 
-	if [[ -d /var/packages/CodecPack/target/bin/ffmpeg41 ]]; then
-		echo "[INFO] Patching CodecPack ffmpeg41"
-		mv /var/packages/CodecPack/target/bin/ffmpeg41 /var/packages/CodecPack/target/bin/ffmpeg41.orig
-		cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg41
-	fi
+  	save_and_patch
+  	restart_videostation
 
 	echo ""
-	echo "[SUCCESS] Done patching, please restart VideoStation (stop and start from package center)"
+	echo "[SUCCESS] Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
 }
 
 if [[ $(cat /proc/cpuinfo | grep 'model name' | uniq) =~ "ARMv8" ]]; then
