@@ -27,7 +27,7 @@ function armv8_procedure() {
 	declare -a ffmpegfiles=(
 		"libavcodec.so.56"
 		"libavdevice.so.56"
-		"libavfilter.so.56"
+		"libavfilter.so.5"
 		"libavformat.so.56"
 		"libavutil.so.54"
 		"libpostproc.so.53"
@@ -45,6 +45,12 @@ function armv8_procedure() {
 		echo "[INFO] Downloading $file ..."
 		wget -q -O "/var/packages/VideoStation/target/lib/ffmpeg/$file" "https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/ffmpeg/$file?raw=true"
 	done
+
+	if [[ -d /var/packages/CodecPack/target/lib/ffmpeg27 ]]; then
+		echo "[INFO] Creating symbolic link from CodecPack ffmpeg directory"
+		mv /var/packages/CodecPack/target/lib/ffmpeg27 /var/packages/CodecPack/target/lib/ffmpeg27.orig
+		ln -s /var/packages/VideoStation/target/lib/ffmpeg /var/packages/CodecPack/target/lib/ffmpeg27
+	fi
 
   	save_and_patch
   	restart_videostation
