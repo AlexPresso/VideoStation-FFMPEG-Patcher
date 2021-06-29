@@ -47,15 +47,9 @@ function armv8_procedure() {
 	done
 
 	if [[ -d /var/packages/CodecPack/target/lib/ffmpeg27 ]]; then
-		echo "[INFO] Saving current Advanced Media Extensions ffmpeg27 as ffmpeg27.orig"
+		echo "[INFO] Creating symbolic link from CodecPack ffmpeg directory"
 		mv /var/packages/CodecPack/target/lib/ffmpeg27 /var/packages/CodecPack/target/lib/ffmpeg27.orig
-
-		echo "[INFO] Copying VideoStation's ffmpeg to CodecPack ffmpeg27"
-		cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg27
-
-		sed -i 's/bin1=\/var\/packages\/VideoStation\/target\/bin\/ffmpeg.orig/bin1=\/var\/packages\/CodecPack\/target\/bin\/ffmpeg27.orig/' /var/packages/CodecPack/target/bin/ffmpeg27
-
-		chmod 755 /var/packages/CodecPack/target/bin/ffmpeg33
+		ln -s /var/packages/VideoStation/target/lib/ffmpeg /var/packages/CodecPack/target/lib/ffmpeg27
 	fi
 
   	save_and_patch
