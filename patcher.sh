@@ -79,8 +79,6 @@ function others_procedure() {
 		echo "[INFO] Copying VideoStation's ffmpeg to CodecPack ffmpeg33"
 		cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg33
 
-		sed -i 's/bin1=\/var\/packages\/VideoStation\/target\/bin\/ffmpeg.orig/bin1=\/var\/packages\/CodecPack\/target\/bin\/ffmpeg33.orig/' /var/packages/CodecPack/target/bin/ffmpeg33
-
 		chmod 755 /var/packages/CodecPack/target/bin/ffmpeg33
 	fi
 
