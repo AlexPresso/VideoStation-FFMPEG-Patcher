@@ -4,14 +4,18 @@
   <img src="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/banner.png?raw=true" height=200px alt="Banner">
 </p>
 
-This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the ffmpeg library files by the one of VideoStation-2.3.4-1468 (which supported those formats).
+This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the ffmpeg library files by a wrapper using SynoCommunity ffmpeg.
+
+## ⚠️ Warning ⚠️
+Due to recent publication of DSM 7.0, the ffmpeg-wrapper is working randomly depending on your NAS hardware.
+I'm working hard to fix it but in the mean time, please do not update to DSM 7.0.
 
 ## Supported architectures
 ([check your NAS architecture here](https://github.com/SynoCommunity/spksrc/wiki/Architecture-per-Synology-model))
-- ARMv8 ✅
-- Old ARM  ✅
-- x64 ✅
-- x86 ✅
+- ARMv8 ⚠️ (fails on DSM 7.0)
+- Old ARM ⚠️ (sometimes fails on DSM 7.0)
+- x64 ⚠️ (sometimes fails on DSM 7.0)
+- x86 ⚠️ (sometimes fails on DSM 7.0)
 
 ## Dependencies
 - DSM 6.2.2-24922 Update 4 (and above)
@@ -27,4 +31,3 @@ This patcher is designed to simplify the installation steps from this [Gist](htt
 
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`
 - VideoStation will have to be repatched everytime you update it (and when you update DSM)
-
