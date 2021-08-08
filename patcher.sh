@@ -4,11 +4,14 @@
 #	LIFECYCLE
 ###############################
 function welcome_motd() {
-	echo "[INFO] ffmpeg-patcher v1.0"
+	echo "[INFO] ffmpeg-patcher v1.2"
 
 	motd=$(curl -s -L "https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/motd.txt?raw=true")
 	if [ "${#motd}" -ge 1 ]; then
-		echo "[INFO] Message of the day: $motd"
+		echo "[INFO] Message of the day:"
+		echo ""
+		echo "$motd"
+		echo ""
 	fi
 }
 
