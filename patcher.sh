@@ -1,5 +1,24 @@
 #!/bin/bash
 
+###############################
+#	LIFECYCLE
+###############################
+function welcome_motd() {
+	echo "[INFO] ffmpeg-patcher v1.0"
+
+	motd=$(curl -s -L "https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/motd.txt?raw=true")
+	if [ "${#motd}" -ge 1 ]; then
+		echo "[INFO] Message of the day: $motd"
+	fi
+}
+
+function save_and_patch() {
+	cp -n /var/packages/VideoStation/target/lib/libsynovte.so /var/packages/VideoStation/target/lib/libsynovte.so.orig
+	chown VideoStation:VideoStation /var/packages/VideoStation/target/lib/libsynovte.so.orig
+
+	sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' /var/packages/VideoStation/target/lib/libsynovte.so
+}
+
 function restart_videostation() {
 	if [[ -d /var/packages/CodecPack/target/bin ]]; then
   		echo "[INFO] Restarting CodecPack..."
@@ -10,13 +29,15 @@ function restart_videostation() {
 	synopkg restart VideoStation
 }
 
-function save_and_patch() {
-	cp -n /var/packages/VideoStation/target/lib/libsynovte.so /var/packages/VideoStation/target/lib/libsynovte.so.orig
-	chown VideoStation:VideoStation /var/packages/VideoStation/target/lib/libsynovte.so.orig
-
-	sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' /var/packages/VideoStation/target/lib/libsynovte.so
+function end_patch() {
+	echo ""
+	echo "[SUCCESS] Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
 }
 
+
+################################
+#	PATCH PROCEDURES
+################################
 function armv8_procedure() {
 	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
 	mv -n /var/packages/VideoStation/target/lib/ffmpeg /var/packages/VideoStation/target/lib/ffmpeg.orig
@@ -54,12 +75,10 @@ function armv8_procedure() {
 
   	save_and_patch
   	restart_videostation
-
-	echo ""
-	echo "[SUCCESS] Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
+	end_patch
 }
 
-function others_procedure() {
+function wrapper_procedure() {
 	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
 	mv -n /var/packages/VideoStation/target/bin/ffmpeg /var/packages/VideoStation/target/bin/ffmpeg.orig
 
@@ -71,27 +90,39 @@ function others_procedure() {
   	chmod u+s /var/packages/VideoStation/target/bin/ffmpeg
 
   	if [[ -d /var/packages/CodecPack/target/bin ]]; then
-  		echo "[INFO] Detected Advanced Media Extensions"
+  		cpackfiles=($(ls /var/packages/CodecPack/target/bin | grep ffmpeg))
 
-  		echo "[INFO] Saving current Advanced Media Extensions ffmpeg33 as ffmpeg33.orig"
-		mv /var/packages/CodecPack/target/bin/ffmpeg33 /var/packages/CodecPack/target/bin/ffmpeg33.orig
+  		for file in "${cpackfiles[@]}"
+  		do
+  			echo "[INFO] Patching CodecPack's $file..."
 
-		echo "[INFO] Copying VideoStation's ffmpeg to CodecPack ffmpeg33"
-		cp /var/packages/VideoStation/target/bin/ffmpeg /var/packages/CodecPack/target/bin/ffmpeg33
+  			mv "/var/packages/CodecPack/target/bin/$file" "/var/packages/CodecPack/target/bin/$file.orig"
+  			cp /var/packages/VideoStation/target/bin/ffmpeg "/var/packages/CodecPack/target/bin/$file"
 
-		chmod 755 /var/packages/CodecPack/target/bin/ffmpeg33
+  			chmod 755 "/var/packages/CodecPack/target/bin/$file"
+		done
 	fi
 
   	save_and_patch
   	restart_videostation
-
-	echo ""
-	echo "[SUCCESS] Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
+  	end_patch
 }
 
-if [[ $(cat /proc/cpuinfo | grep 'model name' | uniq) =~ "ARMv8" ]]; then
+
+################################
+#	ENTRYPOINT
+################################
+forcewrapper=false
+
+while getopts 'force-wrapper' option
+do
+	case $option in
+		force-wrapper) forcewrapper=true ;;
+	esac
+done
+
+if [[ $(cat /proc/cpuinfo | grep 'model name' | uniq) =~ "ARMv8" && !"$forcewrapper" ]]; then
   	armv8_procedure
 else
   	others_procedure
 fi
-
