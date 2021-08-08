@@ -7,8 +7,11 @@
 This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the ffmpeg library files by a wrapper using SynoCommunity ffmpeg.
 
 ## ⚠️ Warning ⚠️
-Due to recent publication of DSM 7.0, the ffmpeg-wrapper is working randomly depending on your NAS hardware.
-I'm working hard to fix it but in the mean time, please do not update to DSM 7.0.
+Due to recent publication of DSM 7.0, the ffmpeg-wrapper is working randomly on ARMv8 (x64 and x86 should be fine).
+I'm working hard to fix it but in the mean time please do not update your ARMv8 NAS to DSM 7.0.
+I'm also aware and investigating about the following issues:
+- performance issues on some architectures
+- x265 (HEVC) running in infinite loop
 
 ## Supported architectures
 ([check your NAS architecture here](https://github.com/SynoCommunity/spksrc/wiki/Architecture-per-Synology-model))
@@ -27,7 +30,7 @@ I'm working hard to fix it but in the mean time, please do not update to DSM 7.0
 - Install SynoCommunity ffmpeg ([help](https://synocommunity.com/#easy-install))
 - Connect to your NAS using SSH (admin user required) ([help](https://www.synology.com/en-global/knowledgebase/DSM/tutorial/General_Setup/How_to_login_to_DSM_with_root_permission_via_SSH_Telnet))
 - Use the command `sudo -i` to switch to root user
-- Use the [folowing](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage) command to execute the patch
+- Use the [following](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage) command (Basic command) to execute the patch
 - VideoStation will have to be repatched everytime you update it (and when you update DSM)
 
 ## Usage
@@ -36,6 +39,6 @@ Basic command usage:
 With options:  
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- <option>`
 
-| Option | Description |
+| Options | Description |
 | ------ | ----------- |
 | -f | Force patcher to install ffmpeg-wrapper (only usefull on ARMv8 architectures if the default procedure doesn't work)
