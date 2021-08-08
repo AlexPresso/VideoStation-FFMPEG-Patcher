@@ -31,11 +31,9 @@ I'm working hard to fix it but in the mean time, please do not update to DSM 7.0
 - VideoStation will have to be repatched everytime you update it (and when you update DSM)
 
 ## Usage
-Basic command usage:
-
-`curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`
-
-With options:
+Basic command usage:  
+`curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`   
+With options:  
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- <option>`
 
 | Option | Description |
