@@ -2,5 +2,5 @@ There are currently some issues with DSM 7.0 (see repository readme).
 Please let me now of any issue you could get, the more architectures the script is tested on, the more stable it will be.
 
 ARMv8 architectures are having troubles with the dedicated patch procedures, if the first attempt fails:
-- uninstall + reinstall bot VideoStation (keep library) and Advanced Media Extension
+- uninstall + reinstall both VideoStation (keep library) and Advanced Media Extension
 - re-run the script using the -f option (curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- -f)
