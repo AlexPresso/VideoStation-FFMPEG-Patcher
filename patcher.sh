@@ -39,6 +39,7 @@ function end_patch() {
 #	PATCH PROCEDURES
 ################################
 function armv8_procedure() {
+	echo "[INFO] Running ARMv8 procedure"
 	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
 	mv -n /var/packages/VideoStation/target/lib/ffmpeg /var/packages/VideoStation/target/lib/ffmpeg.orig
 
@@ -79,6 +80,7 @@ function armv8_procedure() {
 }
 
 function wrapper_procedure() {
+	echo "[INFO] Running wrapping procedure"
 	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
 	mv -n /var/packages/VideoStation/target/bin/ffmpeg /var/packages/VideoStation/target/bin/ffmpeg.orig
 
