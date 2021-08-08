@@ -3,4 +3,4 @@ Please let me now of any issue you could get, the more architectures the script 
 
 ARMv8 architectures are having troubles with the dedicated patch procedures, if the first attempt fails:
 - uninstall + reinstall bot VideoStation (keep library) and Advanced Media Extension
-- re-run the script using the --force-wrapper option
+- re-run the script using the -f option

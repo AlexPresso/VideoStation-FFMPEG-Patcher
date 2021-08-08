@@ -119,15 +119,17 @@ function wrapper_procedure() {
 ################################
 forcewrapper=false
 
-while getopts 'force-wrapper' option
+while getopts "f" option
 do
 	case $option in
-		force-wrapper) forcewrapper=true ;;
+		f)
+			forcewrapper=true
+			;;
 	esac
 done
 
-if [[ $(cat /proc/cpuinfo | grep 'model name' | uniq) =~ "ARMv8" && !"$forcewrapper" ]]; then
+if [[ $(cat /proc/cpuinfo | grep 'model name' | uniq) =~ "ARMv8" && $forcewrapper == false ]]; then
   	armv8_procedure
 else
-  	others_procedure
+  	wrapper_procedure
 fi
