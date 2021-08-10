@@ -15,10 +15,10 @@ I'm also aware and investigating about the following issues:
 
 ## Supported architectures
 ([check your NAS architecture here](https://github.com/SynoCommunity/spksrc/wiki/Architecture-per-Synology-model))
-- ARMv8 ⚠️ (partial support)
-- Old ARM ⚠️ (partial support)
-- x64 ✅
-- x86 ✅
+- ARMv8 ⚠️ (partial support of DSM 7.0)
+- Old ARM ⚠️ (partial support of DSM 7.0)
+- x64 ✅ (DSM 7.0 ready)
+- x86 ✅ (DSM 7.0 ready)
 
 ## Dependencies
 - DSM 6.2.2-24922 Update 4 (and above)
