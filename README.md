@@ -15,8 +15,8 @@ I'm also aware and investigating about the following issues:
 
 ## Supported architectures
 ([check your NAS architecture here](https://github.com/SynoCommunity/spksrc/wiki/Architecture-per-Synology-model))
-- ARMv8 ⚠️ (partial support of DSM 7.0)
-- Old ARM ⚠️ (partial support of DSM 7.0)
+- ARMv8 ⚠️ (DSM 7.0 ready but the wrapper could have performances issues on some NAS models)
+- Old ARM ✅ (DSM 7.0 ready)
 - x64 ✅ (DSM 7.0 ready)
 - x86 ✅ (DSM 7.0 ready)
 
