@@ -6,13 +6,6 @@
 
 This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the ffmpeg library files by a wrapper using SynoCommunity ffmpeg.
 
-## ⚠️ Warning ⚠️
-Due to recent publication of DSM 7.0, the ffmpeg-wrapper is working randomly on ARMv8 (x64 and x86 should be fine).
-I'm working hard to fix it but in the mean time please do not update your ARMv8 NAS to DSM 7.0.
-I'm also aware and investigating about the following issues:
-- performance issues on some architectures
-- x265 (HEVC) running in infinite loop
-
 ## Supported architectures
 ([check your NAS architecture here](https://github.com/SynoCommunity/spksrc/wiki/Architecture-per-Synology-model))
 - ARMv8 ⚠️ (DSM 7.0 ready but the wrapper could have performances issues on some NAS models)
