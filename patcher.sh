@@ -95,16 +95,15 @@ function wrapper_procedure() {
   	chmod u+s /var/packages/VideoStation/target/bin/ffmpeg
 
   	if [[ -d /var/packages/CodecPack/target/bin ]]; then
-  		cpackfiles=($(ls /var/packages/CodecPack/target/bin | grep ffmpeg))
-
-  		for file in "${cpackfiles[@]}"
-  		do
-  			echo "[INFO] Patching CodecPack's $file..."
-
-  			mv "/var/packages/CodecPack/target/bin/$file" "/var/packages/CodecPack/target/bin/$file.orig"
-  			cp /var/packages/VideoStation/target/bin/ffmpeg "/var/packages/CodecPack/target/bin/$file"
-
-  			chmod 755 "/var/packages/CodecPack/target/bin/$file"
+		find /var/packages/CodecPack/target/bin/ -type f -name "ffmpeg*" | grep -v ".orig" | while read filename
+		do
+  			echo "[INFO] Patching CodecPack's $filename..."
+			if [[ ! -f "$filename.orig" ]]; then
+				mv "$filename" "$filename.orig"
+			fi
+			if [[ ! -f "$filename" ]]; then
+				ln -s /var/packages/VideoStation/target/bin/ffmpeg "$filename"
+			fi
 		done
 	fi
 
