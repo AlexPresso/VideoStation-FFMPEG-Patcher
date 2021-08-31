@@ -116,6 +116,8 @@ function wrapper_procedure() {
 ################################
 #	ENTRYPOINT
 ################################
+welcome_motd
+
 forcewrapper=false
 
 while getopts "f" option
