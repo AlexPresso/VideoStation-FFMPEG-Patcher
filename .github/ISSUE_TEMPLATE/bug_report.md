@@ -10,6 +10,7 @@ assignees: ''
 **System details**
 - Synology model: [Synology NAS model]
 - DSM version: [version]
+- SynoCommunity FFMPEG Version: [version]
 - VideoStation version: [version]
 - Advanced Media Extensions version: [version / "none" if you don't have it installed]
 
