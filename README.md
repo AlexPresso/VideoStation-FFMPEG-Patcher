@@ -8,7 +8,7 @@ This patcher is designed to simplify the installation steps from this [Gist](htt
 
 ## Supported architectures
 ([check your NAS architecture here](https://github.com/SynoCommunity/spksrc/wiki/Architecture-per-Synology-model))
-- ARMv8 ⚠️ (DSM 7.0 ready but the wrapper could have performances issues on some NAS models)
+- ARMv8 ✅ (DSM 7.0 ready)
 - Old ARM ✅ (DSM 7.0 ready)
 - x64 ✅ (DSM 7.0 ready)
 - x86 ✅ (DSM 7.0 ready)
@@ -27,11 +27,12 @@ This patcher is designed to simplify the installation steps from this [Gist](htt
 - You'll have to re-run the patcher everytime you update VideoStation, Advanced Media Extensions and DSM
 
 ## Usage
-Basic command usage:  
+Basic command:  
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`   
 With options:  
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- <option>`
 
 | Options | Description |
 | ------ | ----------- |
-| -f | Force patcher to install ffmpeg-wrapper (only usefull on ARMv8 architectures if the default procedure doesn't work)
+| -patch | patch VideoStation and CodecPack |
+| -unpatch | restore VideoStation and CodecPack to default files 
