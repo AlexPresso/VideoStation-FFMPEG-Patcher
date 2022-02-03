@@ -1,136 +1,133 @@
 #!/bin/bash
 
 ###############################
-#	LIFECYCLE
+#	VARS
 ###############################
-function welcome_motd() {
-	echo "[INFO] ffmpeg-patcher v1.2"
 
-	motd=$(curl -s -L "https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/motd.txt?raw=true")
+repo_base_url=https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher
+vs_bin_path=/var/packages/VideoStation/target/bin
+cp_bin_path=/var/packages/CodecPack/target/bin
+ffmpeg_bin_path=/var/packages/ffmpeg/target/bin
+libsynovte_path=/var/packages/VideoStation/target/lib/libsynovte.so
+
+###############################
+#	UTILS
+###############################
+
+function log() {
+	echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2"
+}
+function info() {
+	log "INFO" "$1"
+}
+function error() {
+    log "ERROR" "$1"
+}
+
+function welcome_motd() {
+	info "ffmpeg-patcher v1.5"
+
+	motd=$(curl -s -L "$repo_base_url/blob/main/motd.txt?raw=true")
 	if [ "${#motd}" -ge 1 ]; then
-		echo "[INFO] Message of the day:"
+		log "Message of the day"
 		echo ""
 		echo "$motd"
 		echo ""
 	fi
 }
 
-function save_and_patch() {
-	cp -n /var/packages/VideoStation/target/lib/libsynovte.so /var/packages/VideoStation/target/lib/libsynovte.so.orig
-	chown VideoStation:VideoStation /var/packages/VideoStation/target/lib/libsynovte.so.orig
-
-	sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' /var/packages/VideoStation/target/lib/libsynovte.so
-}
-
-function restart_videostation() {
-	if [[ -d /var/packages/CodecPack/target/bin ]]; then
-  		echo "[INFO] Restarting CodecPack..."
+function restart_packages() {
+	if [[ -d $cp_bin_path ]]; then
+		log "INFO" "Restarting CodecPack..."
 		synopkg restart CodecPack
 	fi
 
-	echo "[INFO] Restarting VideoStation..."
+	info "Restarting VideoStation..."
 	synopkg restart VideoStation
 }
 
-function end_patch() {
-	echo ""
-	echo "[SUCCESS] Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
+function check_dependencies() {
+    if [[ ! -d $ffmpeg_bin_path ]]; then
+        error "Missing SynoCommunity ffmpeg package, please install it and re-run the patcher."
+        exit 1
+    fi
 }
-
 
 ################################
 #	PATCH PROCEDURES
 ################################
-function armv8_procedure() {
-	echo "[INFO] Running ARMv8 procedure"
-	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
-	mv -n /var/packages/VideoStation/target/lib/ffmpeg /var/packages/VideoStation/target/lib/ffmpeg.orig
 
-	echo "[INFO] Downloading patched ffmpeg files to /var/packages/VideoStation/target/lib"
-	echo ""
+function patch() {
+	info "====== Patching procedure ======"
 
-	declare -a ffmpegfiles=(
-		"libavcodec.so.56"
-		"libavdevice.so.56"
-		"libavfilter.so.5"
-		"libavformat.so.56"
-		"libavutil.so.54"
-		"libpostproc.so.53"
-		"libswresample.so.1"
-		"libswscale.so.3"
-	);
+	info "Saving current ffmpeg as ffmpeg.orig"
+	mv -n "$vs_bin_path/ffmpeg" "$vs_bin_path/ffmpeg.orig"
 
-	if [[ ! -d /var/packages/VideoStation/target/lib/ffmpeg ]]; then
-		echo "[INFO] Creating ffmpeg directory"
-		mkdir /var/packages/VideoStation/target/lib/ffmpeg
-	fi
+    info "Downloading ffmpeg's wrapper..."
+    wget -q -O - "$repo_base_url/blob/main/ffmpeg-wrapper.sh?raw=true" > "$vs_bin_path/ffmpeg"
+    chown root:VideoStation "$vs_bin_path/ffmpeg"
+    chmod 750 "$vs_bin_path/ffmpeg"
+    chmod u+s "$vs_bin_path/ffmpeg"
 
-	for file in "${ffmpegfiles[@]}"
-	do
-		echo "[INFO] Downloading $file ..."
-		wget -q -O "/var/packages/VideoStation/target/lib/ffmpeg/$file" "https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/ffmpeg/$file?raw=true"
-	done
-
-	if [[ -d /var/packages/CodecPack/target/lib/ffmpeg27 ]]; then
-		echo "[INFO] Creating symbolic link from CodecPack ffmpeg directory"
-		mv /var/packages/CodecPack/target/lib/ffmpeg27 /var/packages/CodecPack/target/lib/ffmpeg27.orig
-		ln -s /var/packages/VideoStation/target/lib/ffmpeg /var/packages/CodecPack/target/lib/ffmpeg27
-	fi
-
-  	save_and_patch
-  	restart_videostation
-	end_patch
-}
-
-function wrapper_procedure() {
-	echo "[INFO] Running wrapping procedure"
-	echo "[INFO] Saving current ffmpeg as ffmpeg.orig"
-	mv -n /var/packages/VideoStation/target/bin/ffmpeg /var/packages/VideoStation/target/bin/ffmpeg.orig
-
-	echo "[INFO] Downloading ffmpeg-wrapper for VideoStation"
-	wget -q -O - https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/ffmpeg-wrapper.sh?raw=true > /var/packages/VideoStation/target/bin/ffmpeg
-
-  	chown root:VideoStation /var/packages/VideoStation/target/bin/ffmpeg
-  	chmod 750 /var/packages/VideoStation/target/bin/ffmpeg
-  	chmod u+s /var/packages/VideoStation/target/bin/ffmpeg
-
-  	if [[ -d /var/packages/CodecPack/target/bin ]]; then
-		find /var/packages/CodecPack/target/bin/ -type f -name "ffmpeg*" | grep -v ".orig" | while read filename
+	if [[ -d $cp_bin_path ]]; then
+		find $cp_bin_path -type f -name "ffmpeg*" | grep -v ".orig" | while read filename
 		do
-  			echo "[INFO] Patching CodecPack's $filename..."
-			if [[ ! -f "$filename.orig" ]]; then
-				mv "$filename" "$filename.orig"
-			fi
-			if [[ ! -f "$filename" ]]; then
-				ln -s /var/packages/VideoStation/target/bin/ffmpeg "$filename"
-			fi
+			info "Patching CodecPack's $filename"
+
+			mv -n $filename "$filename.orig"
+			ln -s -f "$vs_bin_path/ffmpeg" $filename
 		done
 	fi
 
-  	save_and_patch
-  	restart_videostation
-  	end_patch
+	info "Saving current libsynovte.so as libsynovte.so.orig"
+	cp -n "$libsynovte_path" "$libsynovte_path.orig"
+    chown VideoStation:VideoStation "$libsynovte_path.orig"
+
+	info "Enabling eac3, dts and truehd"
+	sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
+
+	restart_packages
+
+	echo ""
+	info "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
 }
 
+function unpatch() {
+	info "====== Unpatch procedure ======"
+
+	info "Restoring libsynovte.so"
+	mv -f "$libsynovte_path.orig" "$libsynovte_path"
+
+	info "Restoring VideoStation's ffmpeg"
+	mv -f "$vs_bin_path/ffmpeg.orig" "$vs_bin_path/ffmpeg"
+
+	if [[ -d $cp_bin_path ]]; then
+		find $cp_bin_path -type f -name "ffmpeg*.orig" | while read filename
+		do
+            info "Restoring CodecPack's $filename"
+            mv -T -f "$filename" "${filename::-5}"
+		done
+	fi
+
+	restart_packages
+
+	echo ""
+    info "unpatch complete"
+}
 
 ################################
 #	ENTRYPOINT
 ################################
 welcome_motd
+arg1=${1:--patch}
 
-forcewrapper=false
+check_dependencies
 
-while getopts "f" option
-do
-	case $option in
-		f)
-			forcewrapper=true
-			;;
-	esac
-done
-
-if [[ $(cat /proc/cpuinfo | grep 'model name' | uniq) =~ "ARMv8" && $forcewrapper == false ]]; then
-  	armv8_procedure
-else
-  	wrapper_procedure
-fi
+case "$arg1" in
+    -unpatch)
+        unpatch
+    ;;
+    -patch)
+        patch
+    ;;
+esac

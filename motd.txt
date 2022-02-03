@@ -1,5 +1,5 @@
-Please let me now of any issue you could get, the more architectures the script is tested on, the more stable it will be.
+The patcher was redesigned to include an unpatch procedure.
 
-Some NAS running on ARMv8 architectures can have troubles with the dedicated patch procedures, if the first attempt fails:
-- uninstall + reinstall both VideoStation (keep library) and Advanced Media Extension
-- re-run the script using the -f option (curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- -f)
+I'm aware of an issue with HEVC and I'm working on it.
+
+As always, please let me know of any issue you could have.
