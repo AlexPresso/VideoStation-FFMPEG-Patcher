@@ -58,10 +58,10 @@ function check_dependencies() {
 ################################
 
 function patch() {
-	info "====== Patching procedure ======"
+    info "====== Patching procedure ======"
 
-	info "Saving current ffmpeg as ffmpeg.orig"
-	mv -n "$vs_bin_path/ffmpeg" "$vs_bin_path/ffmpeg.orig"
+    info "Saving current ffmpeg as ffmpeg.orig"
+    mv -n "$vs_bin_path/ffmpeg" "$vs_bin_path/ffmpeg.orig"
 
     info "Downloading ffmpeg's wrapper..."
     wget -q -O - "$repo_base_url/blob/main/ffmpeg-wrapper.sh?raw=true" > "$vs_bin_path/ffmpeg"
@@ -69,49 +69,49 @@ function patch() {
     chmod 750 "$vs_bin_path/ffmpeg"
     chmod u+s "$vs_bin_path/ffmpeg"
 
-	if [[ -d $cp_bin_path ]]; then
-		find $cp_bin_path -type f -name "ffmpeg*" | grep -v ".orig" | while read filename
-		do
-			info "Patching CodecPack's $filename"
+    if [[ -d $cp_bin_path ]]; then
+        find $cp_bin_path -type f -name "ffmpeg*" | grep -v ".orig" | while read filename
+        do
+            info "Patching CodecPack's $filename"
 
-			mv -n $filename "$filename.orig"
-			ln -s -f "$vs_bin_path/ffmpeg" $filename
-		done
-	fi
+            mv -n $filename "$filename.orig"
+            ln -s -f "$vs_bin_path/ffmpeg" $filename
+        done
+    fi
 
-	info "Saving current libsynovte.so as libsynovte.so.orig"
-	cp -n "$libsynovte_path" "$libsynovte_path.orig"
+    info "Saving current libsynovte.so as libsynovte.so.orig"
+    cp -n "$libsynovte_path" "$libsynovte_path.orig"
     chown VideoStation:VideoStation "$libsynovte_path.orig"
 
-	info "Enabling eac3, dts and truehd"
-	sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
+    info "Enabling eac3, dts and truehd"
+    sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
 
-	restart_packages
+    restart_packages
 
-	echo ""
-	info "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
+    echo ""
+    info "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
 }
 
 function unpatch() {
-	info "====== Unpatch procedure ======"
+    info "====== Unpatch procedure ======"
 
-	info "Restoring libsynovte.so"
-	mv -f "$libsynovte_path.orig" "$libsynovte_path"
+    info "Restoring libsynovte.so"
+    mv -f "$libsynovte_path.orig" "$libsynovte_path"
 
-	info "Restoring VideoStation's ffmpeg"
-	mv -f "$vs_bin_path/ffmpeg.orig" "$vs_bin_path/ffmpeg"
+    info "Restoring VideoStation's ffmpeg"
+    mv -f "$vs_bin_path/ffmpeg.orig" "$vs_bin_path/ffmpeg"
 
-	if [[ -d $cp_bin_path ]]; then
-		find $cp_bin_path -type f -name "ffmpeg*.orig" | while read filename
-		do
+    if [[ -d $cp_bin_path ]]; then
+        find $cp_bin_path -type f -name "ffmpeg*.orig" | while read filename
+        do
             info "Restoring CodecPack's $filename"
             mv -T -f "$filename" "${filename::-5}"
-		done
-	fi
+        done
+    fi
 
-	restart_packages
+    restart_packages
 
-	echo ""
+    echo ""
     info "unpatch complete"
 }
 
