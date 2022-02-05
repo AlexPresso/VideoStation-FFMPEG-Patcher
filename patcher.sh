@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################
-#	VARS
+#   VARS
 ###############################
 
 repo_base_url=https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher
@@ -11,39 +11,39 @@ ffmpeg_bin_path=/var/packages/ffmpeg/target/bin
 libsynovte_path=/var/packages/VideoStation/target/lib/libsynovte.so
 
 ###############################
-#	UTILS
+#   UTILS
 ###############################
 
 function log() {
-	echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2"
 }
 function info() {
-	log "INFO" "$1"
+    log "INFO" "$1"
 }
 function error() {
     log "ERROR" "$1"
 }
 
 function welcome_motd() {
-	info "ffmpeg-patcher v1.5"
+    info "ffmpeg-patcher v1.5"
 
-	motd=$(curl -s -L "$repo_base_url/blob/main/motd.txt?raw=true")
-	if [ "${#motd}" -ge 1 ]; then
-		log "Message of the day"
-		echo ""
-		echo "$motd"
-		echo ""
-	fi
+    motd=$(curl -s -L "$repo_base_url/blob/main/motd.txt?raw=true")
+    if [ "${#motd}" -ge 1 ]; then
+        log "Message of the day"
+        echo ""
+        echo "$motd"
+        echo ""
+    fi
 }
 
 function restart_packages() {
-	if [[ -d $cp_bin_path ]]; then
-		log "INFO" "Restarting CodecPack..."
-		synopkg restart CodecPack
-	fi
+    if [[ -d $cp_bin_path ]]; then
+        log "INFO" "Restarting CodecPack..."
+        synopkg restart CodecPack
+    fi
 
-	info "Restarting VideoStation..."
-	synopkg restart VideoStation
+    info "Restarting VideoStation..."
+    synopkg restart VideoStation
 }
 
 function check_dependencies() {
@@ -54,7 +54,7 @@ function check_dependencies() {
 }
 
 ################################
-#	PATCH PROCEDURES
+#   PATCH PROCEDURES
 ################################
 
 function patch() {
@@ -116,7 +116,7 @@ function unpatch() {
 }
 
 ################################
-#	ENTRYPOINT
+#   ENTRYPOINT
 ################################
 welcome_motd
 arg1=${1:--patch}
