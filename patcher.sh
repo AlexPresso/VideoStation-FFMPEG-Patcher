@@ -61,7 +61,7 @@ function patch() {
     info "====== Patching procedure ======"
 
     info "Saving current ffmpeg as ffmpeg.orig"
-    if[ -f "$vs_bin_path/ffmpeg.orig" ]
+    if [ -f "$vs_bin_path/ffmpeg.orig" ]
     then
       echo "  Already patched. Skipping this step."
     else
@@ -79,7 +79,7 @@ function patch() {
         do
             info "Patching CodecPack's $filename"
 
-            if[ -f "$filename.orig" ]
+            if [ -f "$filename.orig" ]
             then
                 #Backup already existing _ keep original file safe
                 rm -f "$filename"
@@ -91,7 +91,7 @@ function patch() {
     fi
 
     
-    if[ !-f "$libsynovte_path.orig" ]
+    if [ !-f "$libsynovte_path.orig" ]
     then
         info "Saving current libsynovte.so as libsynovte.so.orig"
         cp -n "$libsynovte_path" "$libsynovte_path.orig"
