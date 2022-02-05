@@ -61,7 +61,12 @@ function patch() {
     info "====== Patching procedure ======"
 
     info "Saving current ffmpeg as ffmpeg.orig"
-    mv -n "$vs_bin_path/ffmpeg" "$vs_bin_path/ffmpeg.orig"
+    if[ -f "$vs_bin_path/ffmpeg.orig" ]
+    then
+      echo "  Already patched. Skipping this step."
+    else
+        mv -n "$vs_bin_path/ffmpeg" "$vs_bin_path/ffmpeg.orig"
+    fi
 
     info "Downloading ffmpeg's wrapper..."
     wget -q -O - "$repo_base_url/blob/main/ffmpeg-wrapper.sh?raw=true" > "$vs_bin_path/ffmpeg"
@@ -74,14 +79,24 @@ function patch() {
         do
             info "Patching CodecPack's $filename"
 
-            mv -n $filename "$filename.orig"
+            if[ -f "$filename.orig" ]
+            then
+                #Backup already existing _ keep original file safe
+                rm -f "$filename"
+            else
+                mv -n $filename "$filename.orig"
+            fi
             ln -s -f "$vs_bin_path/ffmpeg" $filename
         done
     fi
 
-    info "Saving current libsynovte.so as libsynovte.so.orig"
-    cp -n "$libsynovte_path" "$libsynovte_path.orig"
-    chown VideoStation:VideoStation "$libsynovte_path.orig"
+    
+    if[ !-f "$libsynovte_path.orig" ]
+    then
+        info "Saving current libsynovte.so as libsynovte.so.orig"
+        cp -n "$libsynovte_path" "$libsynovte_path.orig"
+        chown VideoStation:VideoStation "$libsynovte_path.orig"
+    fi
 
     info "Enabling eac3, dts and truehd"
     sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
