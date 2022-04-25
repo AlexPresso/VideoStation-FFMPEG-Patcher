@@ -4,6 +4,7 @@
 #   VARS
 ###############################
 
+dsm_version=$(cat /etc.defaults/VERSION | grep productversion | sed 's/productversion=//' | tr -d '"')
 repo_base_url=https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher
 vs_bin_path=/var/packages/VideoStation/target/bin
 cp_bin_path=/var/packages/CodecPack/target/bin
@@ -122,6 +123,13 @@ welcome_motd
 arg1=${1:--patch}
 
 check_dependencies
+
+info "You're running DSM $dsm_version"
+if [[ $dsm_version = "7.1" ]]; then
+    cp_bin_path=/var/packages/CodecPack/target/pack/bin
+
+    info "Tuned script for DSM 7.1"
+fi
 
 case "$arg1" in
     -unpatch)
