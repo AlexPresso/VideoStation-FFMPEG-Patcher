@@ -4,9 +4,11 @@
 #   VARS
 ###############################
 
+dsm_version=$(cat /etc.defaults/VERSION | grep productversion | sed 's/productversion=//' | tr -d '"')
 repo_base_url=https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher
 vs_bin_path=/var/packages/VideoStation/target/bin
 cp_bin_path=/var/packages/CodecPack/target/bin
+declare -a cp_to_patch=("ffmpeg41" "ffmpeg27")
 ffmpeg_bin_path=/var/packages/ffmpeg/target/bin
 libsynovte_path=/var/packages/VideoStation/target/lib/libsynovte.so
 
@@ -70,12 +72,11 @@ function patch() {
     chmod u+s "$vs_bin_path/ffmpeg"
 
     if [[ -d $cp_bin_path ]]; then
-        find $cp_bin_path -type f -name "ffmpeg*" | grep -v ".orig" | while read filename
-        do
+        for filename in "${cp_to_patch[@]}"; do
             info "Patching CodecPack's $filename"
 
-            mv -n $filename "$filename.orig"
-            ln -s -f "$vs_bin_path/ffmpeg" $filename
+            mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
+            ln -s -f "$vs_bin_path/ffmpeg" "$cp_bin_path/$filename"
         done
     fi
 
@@ -122,6 +123,13 @@ welcome_motd
 arg1=${1:--patch}
 
 check_dependencies
+
+info "You're running DSM $dsm_version"
+if [[ $dsm_version = "7.1" ]]; then
+    cp_bin_path=/var/packages/CodecPack/target/pack/bin
+
+    info "Tuned script for DSM 7.1"
+fi
 
 case "$arg1" in
     -unpatch)
