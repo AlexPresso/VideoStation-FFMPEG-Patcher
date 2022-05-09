@@ -245,6 +245,7 @@ case "$1" in
 		else
 			args2sv+=("$1")
 			args1vs+=("$1")
+			args2vs+=("$1")
 		fi
 	;;
 esac
