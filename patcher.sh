@@ -125,10 +125,10 @@ arg1=${1:--patch}
 check_dependencies
 
 info "You're running DSM $dsm_version"
-if [[ $dsm_version = "7.1" ]]; then
+if [[ $dsm_version > 7.0 ]]; then
     cp_bin_path=/var/packages/CodecPack/target/pack/bin
 
-    info "Tuned script for DSM 7.1"
+    info "Tuned script for DSM $dsm_version"
 fi
 
 case "$arg1" in
