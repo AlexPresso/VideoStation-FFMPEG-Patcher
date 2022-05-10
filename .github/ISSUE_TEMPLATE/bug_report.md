@@ -2,10 +2,16 @@
 name: Bug report
 about: Create a report to help improve the patcher
 title: "[BUG] try to name your bug"
-labels: awaiting review
+labels: ''
 assignees: ''
 
 ---
+
+# Before posting any bug issue, please make sure you have patched a clean VideoStation / AME install by doing the following:
+- Uninstall VideoStation (keep your library)
+- Uninstall Advanced Media Extensions
+- Re-install VideoStation (it should also ask to install Advanced Media Extensions)
+- Run the patch
 
 **System details**
 - Synology model: [Synology NAS model]
