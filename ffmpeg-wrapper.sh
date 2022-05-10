@@ -5,10 +5,9 @@
 #########################
 
 pid=$$
-movie=""
+defaultargs=${@:3}
 hlsslice=${@: -1}
 hlsroot=${hlsslice::-14}
-metadata=$(cat "$hlsroot/video_metadata")
 stderrfile="/tmp/ffmpeg-$pid.stderr"
 
 #########################
@@ -26,25 +25,20 @@ function info() {
 # ENTRYPOINT
 #########################
 
-movie=$(echo $metadata | jq -r ".path")
-profile=$(echo $metadata | jq -r ".profile_value" | sed -e 's/--/-/g')
-seektime=$(cat "$hlsroot/seek_time" || echo 00000)
-audiotrack=$(cat "$hlsroot/audio_id")
+movie=$(cat "$hlsroot/video_metadata" | jq -r ".path")
 
 info "========================================[$pid]"
 info "MOVIE: $movie"
 info "HLS_ROOT: $hlsroot"
-info "PROFILE: $profile"
-info "START_TIME: $seektime"
-info "AUDIO_ID: $audiotrack"
+info "DEFAULT_ARGS: ${defaultargs[*]}"
 
-declare -a args=("-i" "'$movie'")
-
-args+=("${profile[@]}")
-args+=("-ss" "$seektime")
-args+=("$hlsroot/slice-%05d.ts")
+declare -a args=(
+    "-i" "'$movie'"
+    "${defaultargs[@]}"
+    "$hlsroot/slice-%05d.ts"
+)
 
 info "ARGS: ${args[*]}"
 /var/packages/ffmpeg/target/bin/ffmpeg "${args[@]}" 2> $stderrfile &
 
-rm $stderrfile
+#rm $stderrfile
