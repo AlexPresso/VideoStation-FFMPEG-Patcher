@@ -5,7 +5,8 @@
 #########################
 
 pid=$$
-defaultargs=${@:3}
+childpid=""
+defaultargs=(${@:3})
 hlsslice=${@: -1}
 hlsroot=${hlsslice::-14}
 stderrfile="/tmp/ffmpeg-$pid.stderr"
@@ -21,9 +22,20 @@ function info() {
 	log "INFO" "$1"
 }
 
+function killchild() {
+    rm $stderrfile
+
+    if [[ "$childpid" -ne "" ]]; then
+        info "Killed child ($childpid)"
+        kill -TERM "$childpid" 2>/dev/null
+    fi
+}
+
 #########################
 # ENTRYPOINT
 #########################
+
+trap killchild SIGTERM
 
 movie=$(cat "$hlsroot/video_metadata" | jq -r ".path")
 
@@ -33,12 +45,13 @@ info "HLS_ROOT: $hlsroot"
 info "DEFAULT_ARGS: ${defaultargs[*]}"
 
 declare -a args=(
-    "-i" "'$movie'"
+    "-i" "$movie"
     "${defaultargs[@]}"
-    "$hlsroot/slice-%05d.ts"
 )
 
 info "ARGS: ${args[*]}"
 /var/packages/ffmpeg/target/bin/ffmpeg "${args[@]}" 2> $stderrfile &
 
-#rm $stderrfile
+childpid=$!
+wait $childpid
+
