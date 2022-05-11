@@ -73,10 +73,12 @@ function patch() {
 
     if [[ -d $cp_bin_path ]]; then
         for filename in "${cp_to_patch[@]}"; do
-            info "Patching CodecPack's $filename"
+            if [[ -f "$cp_bin_path/$filename" ]]; then
+                info "Patching CodecPack's $filename"
 
-            mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
-            ln -s -f "$vs_bin_path/ffmpeg" "$cp_bin_path/$filename"
+                mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
+                ln -s -f "$vs_bin_path/ffmpeg" "$cp_bin_path/$filename"
+            fi
         done
     fi
 
