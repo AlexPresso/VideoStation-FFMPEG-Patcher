@@ -80,6 +80,9 @@ function patch() {
                 ln -s -f "$vs_bin_path/ffmpeg" "$cp_bin_path/$filename"
             fi
         done
+
+        mv -n "$cp_bin_path/gst-launch-1.0" "$cp_bin_path/gst-launch-1.0.orig"
+        ln -s -f /var/packages/gstreamer/target/bin/gst-launch-1.0 "$cp_bin_path/gst-launch-1.0"
     fi
 
     info "Saving current libsynovte.so as libsynovte.so.orig"
@@ -105,7 +108,7 @@ function unpatch() {
     mv -f "$vs_bin_path/ffmpeg.orig" "$vs_bin_path/ffmpeg"
 
     if [[ -d $cp_bin_path ]]; then
-        find $cp_bin_path -type f -name "ffmpeg*.orig" | while read filename
+        find $cp_bin_path -type f -name "*.orig" | while read filename
         do
             info "Restoring CodecPack's $filename"
             mv -T -f "$filename" "${filename::-5}"
