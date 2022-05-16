@@ -8,7 +8,7 @@ pid=$$
 defaultargs=($@)
 hlsslice=${@: -1}
 hlsroot=${hlsslice::-14}
-stderrfile="/tmp/ffmpeg-$pid.stderr"
+stderrfile="/tmp/gstlaunch-$pid.stderr"
 logfile="/tmp/ffmpeg.log"
 
 #########################
@@ -26,7 +26,7 @@ function info() {
 }
 
 function endprocess() {
-    info "========================================[end ffmpeg $pid]"
+    info "========================================[end gst $pid]"
     newline
     rm $stderrfile
 }
@@ -37,17 +37,8 @@ function endprocess() {
 
 trap endprocess SIGTERM
 
-movie=$(cat "$hlsroot/video_metadata" | jq -r ".path")
-
 newline
-info "========================================[start ffmpeg $pid]"
-info "MOVIE: $movie"
-info "HLS_ROOT: $hlsroot"
-info "DEFAULT_ARGS: ${defaultargs[*]}"
+info "========================================[start gst $pid]"
+info "GST_ARGS: ${defaultargs[*]}"
 
-declare -a args=(
-    "${defaultargs[@]}"
-)
-
-info "ARGS: ${args[*]}"
-/var/packages/ffmpeg/target/bin/ffmpeg "${args[@]}" 2> $stderrfile
+/var/packages/CodecPack/target/pack/bin/gst-launch-1.0.orig "${defaultargs[@]}" 2> $stderrfile
