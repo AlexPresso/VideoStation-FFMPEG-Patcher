@@ -11,6 +11,7 @@ cp_bin_path=/var/packages/CodecPack/target/bin
 declare -a cp_to_patch=("ffmpeg41" "ffmpeg27")
 ffmpeg_bin_path=/var/packages/ffmpeg/target/bin
 libsynovte_path=/var/packages/VideoStation/target/lib/libsynovte.so
+declare -a dependencies=("ffmpeg" "gstreamer")
 
 ###############################
 #   UTILS
@@ -49,10 +50,12 @@ function restart_packages() {
 }
 
 function check_dependencies() {
-    if [[ ! -d $ffmpeg_bin_path ]]; then
-        error "Missing SynoCommunity ffmpeg package, please install it and re-run the patcher."
-        exit 1
-    fi
+    for pkgname in "${dependencies[@]}"; do
+        if [[ ! -d "/var/packages/$pkgname" ]]; then
+            error "Missing SynoCommunity $pkgname package, please install it and re-run the patcher."
+            exit 1
+        fi
+    done
 }
 
 ################################
