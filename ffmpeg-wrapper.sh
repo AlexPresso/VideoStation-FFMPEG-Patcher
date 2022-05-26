@@ -16,13 +16,13 @@ logfile="/tmp/ffmpeg.log"
 #########################
 
 function log() {
-	echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> $logfile
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> $logfile
 }
 function newline() {
     echo "" >> $logfile
 }
 function info() {
-	log "INFO" "$1"
+    log "INFO" "$1"
 }
 
 function endprocess() {
@@ -44,10 +44,10 @@ info "========================================[start ffmpeg $pid]"
 info "MOVIE: $movie"
 info "HLS_ROOT: $hlsroot"
 info "DEFAULT_ARGS: ${defaultargs[*]}"
+info "ARGS: ${args[*]}"
 
 declare -a args=(
     "${defaultargs[@]}"
 )
 
-info "ARGS: ${args[*]}"
 /var/packages/ffmpeg/target/bin/ffmpeg "${args[@]}" 2> $stderrfile
