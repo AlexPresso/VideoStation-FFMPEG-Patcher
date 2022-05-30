@@ -8,10 +8,9 @@ dsm_version=$(cat /etc.defaults/VERSION | grep productversion | sed 's/productve
 repo_base_url=https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher
 vs_bin_path=/var/packages/VideoStation/target/bin
 cp_bin_path=/var/packages/CodecPack/target/bin
-declare -a cp_to_patch=("ffmpeg41" "ffmpeg27")
-ffmpeg_bin_path=/var/packages/ffmpeg/target/bin
+cp_to_patch=("ffmpeg41" "ffmpeg27")
 libsynovte_path=/var/packages/VideoStation/target/lib/libsynovte.so
-declare -a dependencies=("ffmpeg" "gstreamer")
+dependencies=("ffmpeg" "gstreamer")
 
 ###############################
 #   UTILS

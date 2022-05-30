@@ -28,7 +28,7 @@ function info() {
 function endprocess() {
     info "========================================[end ffmpeg $pid]"
     newline
-    rm $stderrfile
+    rm "$stderrfile"
 }
 
 #########################
@@ -44,10 +44,5 @@ info "========================================[start ffmpeg $pid]"
 info "MOVIE: $movie"
 info "HLS_ROOT: $hlsroot"
 info "DEFAULT_ARGS: ${defaultargs[*]}"
-info "ARGS: ${args[*]}"
 
-declare -a args=(
-    "${defaultargs[@]}"
-)
-
-/var/packages/ffmpeg/target/bin/ffmpeg "${args[@]}" 2> $stderrfile
+/var/packages/ffmpeg/target/bin/ffmpeg "${defaultargs[@]}" 2> $stderrfile

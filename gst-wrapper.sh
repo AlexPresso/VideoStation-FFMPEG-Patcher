@@ -19,16 +19,16 @@ function log() {
 	echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> $logfile
 }
 function newline() {
-    echo "" >> $logfile
+  echo "" >> $logfile
 }
 function info() {
-	log "INFO" "$1"
+  log "INFO" "$1"
 }
 
 function endprocess() {
-    info "========================================[end gst $pid]"
-    newline
-    rm $stderrfile
+  info "========================================[end gst $pid]"
+  newline
+  rm "$stderrfile"
 }
 
 #########################
