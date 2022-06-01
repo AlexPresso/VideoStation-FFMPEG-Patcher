@@ -46,10 +46,9 @@ trap handle_error ERR
 newline
 info "========================================[start ffmpeg $pid]"
 
-movie=$(cat "$hlsroot/video_metadata" | jq -r ".path")
-
-info "MOVIE: $movie"
 info "HLS_ROOT: $hlsroot"
 info "DEFAULT_ARGS: $*"
+movie=$(cat "$hlsroot/video_metadata" | jq -r ".path")
+info "MOVIE: $movie"
 
 /var/packages/ffmpeg/target/bin/ffmpeg "$@" 2> $stderrfile
