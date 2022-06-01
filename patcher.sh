@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ###############################
-#   VARS
+# VARS
 ###############################
 
-dsm_version=$(cat /etc.defaults/VERSION | grep productversion | sed 's/productversion=//' | tr -d '"')
+dsm_version=$(< /etc.defaults/VERSION grep productversion | sed 's/productversion=//' | tr -d '"')
 repo_base_url=https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher
 action="patch"
 branch="main"
@@ -15,7 +15,7 @@ cp_bin_path=/var/packages/CodecPack/target/bin
 cp_to_patch=("ffmpeg41" "ffmpeg27")
 
 ###############################
-#   UTILS
+# UTILS
 ###############################
 
 function log() {
@@ -60,7 +60,7 @@ function check_dependencies() {
 }
 
 ################################
-#   PATCH PROCEDURES
+# PATCH PROCEDURES
 ################################
 
 function patch() {
@@ -122,7 +122,7 @@ function unpatch() {
 }
 
 ################################
-#   ENTRYPOINT
+# ENTRYPOINT
 ################################
 while getopts a:b: flag; do
   case "${flag}" in

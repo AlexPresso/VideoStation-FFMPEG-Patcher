@@ -46,7 +46,7 @@ trap handle_error ERR
 newline
 info "========================================[start ffmpeg $pid]"
 
-movie=$(cat "$hlsroot/video_metadata" | jq -r ".path")
+movie=$(< "$hlsroot/video_metadata" jq -r ".path")
 
 info "MOVIE: $movie"
 info "HLS_ROOT: $hlsroot"
