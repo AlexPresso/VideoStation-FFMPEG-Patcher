@@ -5,8 +5,6 @@
 #########################
 
 pid=$$
-hlsslice=${*: -1}
-hlsroot=${hlsslice::-14}
 stderrfile="/tmp/ffmpeg-$pid.stderr"
 logfile="/tmp/ffmpeg.log"
 
@@ -25,7 +23,7 @@ function info() {
 }
 
 function handle_error() {
-  log "ERROR" "Error on line $(caller)}"
+  log "ERROR" "Error on line $(caller) for command "
   endprocess
 }
 
@@ -45,10 +43,6 @@ trap handle_error ERR
 
 newline
 info "========================================[start ffmpeg $pid]"
-
-info "HLS_ROOT: $hlsroot"
 info "DEFAULT_ARGS: $*"
-movie=$(cat "$hlsroot/video_metadata" | jq -r ".path")
-info "MOVIE: $movie"
 
 /var/packages/ffmpeg/target/bin/ffmpeg "$@" 2> $stderrfile
