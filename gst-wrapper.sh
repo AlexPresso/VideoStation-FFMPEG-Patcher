@@ -5,9 +5,6 @@
 #########################
 
 pid=$$
-defaultargs=($@)
-hlsslice=${@: -1}
-hlsroot=${hlsslice::-14}
 stderrfile="/tmp/gstlaunch-$pid.stderr"
 logfile="/tmp/gstreamer.log"
 
@@ -25,6 +22,11 @@ function info() {
   log "INFO" "$1"
 }
 
+function handle_error() {
+  log "ERROR" "Error on line $(caller)}"
+  endprocess
+}
+
 function endprocess() {
   info "========================================[end gst $pid]"
   newline
@@ -36,9 +38,10 @@ function endprocess() {
 #########################
 
 trap endprocess SIGTERM
+trap handle_error ERR
 
 newline
 info "========================================[start gst $pid]"
-info "GST_ARGS: ${defaultargs[*]}"
+info "GST_ARGS: $*"
 
-/var/packages/gstreamer/target/bin/gst-launch-1.0 "${defaultargs[@]}" 2> $stderrfile
+#/var/packages/gstreamer/target/bin/gst-launch-1.0 "$@" 2> $stderrfile

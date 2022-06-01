@@ -5,8 +5,7 @@
 #########################
 
 pid=$$
-defaultargs=($@)
-hlsslice=${@: -1}
+hlsslice=${*: -1}
 hlsroot=${hlsslice::-14}
 stderrfile="/tmp/ffmpeg-$pid.stderr"
 logfile="/tmp/ffmpeg.log"
@@ -16,19 +15,25 @@ logfile="/tmp/ffmpeg.log"
 #########################
 
 function log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> $logfile
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> $logfile
 }
 function newline() {
-    echo "" >> $logfile
+  echo "" >> $logfile
 }
 function info() {
-    log "INFO" "$1"
+  log "INFO" "$1"
+}
+
+function handle_error() {
+  log "ERROR" "Error on line $(caller)}"
+  endprocess
 }
 
 function endprocess() {
-    info "========================================[end ffmpeg $pid]"
-    newline
-    rm "$stderrfile"
+  info "========================================[end ffmpeg $pid]"
+  newline
+  rm -f "$stderrfile"
+  exit 1
 }
 
 #########################
@@ -36,13 +41,15 @@ function endprocess() {
 #########################
 
 trap endprocess SIGTERM
-
-movie=$(cat "$hlsroot/video_metadata" | jq -r ".path")
+trap handle_error ERR
 
 newline
 info "========================================[start ffmpeg $pid]"
+
+movie=$(cat "$hlsroot/video_metadata" | jq -r ".path")
+
 info "MOVIE: $movie"
 info "HLS_ROOT: $hlsroot"
-info "DEFAULT_ARGS: ${defaultargs[*]}"
+info "DEFAULT_ARGS: $*"
 
-/var/packages/ffmpeg/target/bin/ffmpeg "${defaultargs[@]}" 2> $stderrfile
+/var/packages/ffmpeg/target/bin/ffmpeg "$@" 2> $stderrfile
