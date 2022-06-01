@@ -23,7 +23,7 @@ function info() {
 }
 
 function handle_error() {
-  log "ERROR" "Error on line $(caller)}"
+  log "ERROR" "Error on line $(caller) "
   endprocess
 }
 

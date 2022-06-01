@@ -84,6 +84,11 @@ function patch() {
         ln -s -f "$vs_path/bin/ffmpeg" "$cp_bin_path/$filename"
       fi
     done
+
+    info "Patching CodecPack's gst-launch-1.0"
+    mv -n "$cp_bin_path/gst-launch-1.0" "$cp_bin_path/gst-launch-1.0.orig"
+    wget -q -O - "$repo_base_url/blob/$branch/gst-wrapper.sh?raw=true" > "$cp_bin_path/gst-launch-1.0"
+    chmod a+xr "$cp_bin_path/gst-launch-1.0"
   fi
 
   info "Saving current libsynovte.so as libsynovte.so.orig"
@@ -109,7 +114,7 @@ function unpatch() {
   mv -f "$vs_path/bin/ffmpeg.orig" "$vs_path/bin/ffmpeg"
 
   if [[ -d $cp_bin_path ]]; then
-    find $cp_bin_path -type f -name "ffmpeg*.orig" | while read filename; do
+    find $cp_bin_path -type f -name "*.orig" | while read filename; do
       info "Restoring CodecPack's $filename"
       mv -T -f "$filename" "${filename::-5}"
     done
