@@ -116,13 +116,15 @@ function unpatch() {
   info "====== Unpatch procedure ======"
 
   info "Restoring libsynovte.so"
-  mv -f "$libsynovte_path.orig" "$libsynovte_path"
+  mv -T -f "$libsynovte_path.orig" "$libsynovte_path"
 
-  info "Restoring VideoStation's ffmpeg"
-  mv -f "$vs_path/bin/ffmpeg.orig" "$vs_path/bin/ffmpeg"
+  find "$vs_path/bin" -type f -name "*.orig" | while read -r filename; do
+    info "Restoring VideoStation's $filename"
+    mv -T -f "$filename" "${filename::-5}"
+  done
 
   if [[ -d $cp_bin_path ]]; then
-    find $cp_bin_path -type f -name "*.orig" | while read filename; do
+    find $cp_bin_path -type f -name "*.orig" | while read -r filename; do
       info "Restoring CodecPack's $filename"
       mv -T -f "$filename" "${filename::-5}"
     done
