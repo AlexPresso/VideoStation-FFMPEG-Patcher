@@ -35,11 +35,26 @@ A clear and concise description of what the bug is.
 - Copy paste those lines in a new [gist](https://gist.github.com/)
 - Add the gist link to the issue
 
-## `ffmpeg-FFMxxxx.stderr` (containing chunks transcoding operations)
+## `ffmpeg-xxxx.stderr` (containing chunks transcoding operations)
 - When you ran `ls -al | grep ffmpeg` you should have seen another file that looks like `ffmpeg-FFMxxxx.stderr`
-- Type `tail -100 ffmpeg-FFMxxxx.stderr` (replacing the filename by the correct one)
+- Type `tail -100 ffmpeg-xxxx.stderr` (replacing the filename by the correct one)
 - Copy paste those lines in a new [gist](https://gist.github.com/)
-- Type `head -300 ffmpeg-FFMxxxx.stderr` (replacing the filename by the correct one)
+- Type `head -300 ffmpeg-xxxx.stderr` (replacing the filename by the correct one)
+- Copy paste those lines in another new [gist](https://gist.github.com/)
+- Copy paste all the gists links in the issue
+
+## `gstreamer.log` (containing the ffmpeg-wrapper execution logs)
+- Go to the temporary directory: `cd /tmp`
+- Type `ls -al | grep gst` to list all files containing "ffmpeg" and check you have one named `ffmpeg.log`
+- Type `tail -200 gstreamer.log` to print the last 200 lines to the console
+- Copy paste those lines in a new [gist](https://gist.github.com/)
+- Add the gist link to the issue
+
+## `gstlaunch-xxxx.stderr` (containing chunks transcoding operations)
+- When you ran `ls -al | grep gst` you should have seen another file that looks like `ffmpeg-FFMxxxx.stderr`
+- Type `tail -100 gstlaunch-xxxx.stderr` (replacing the filename by the correct one)
+- Copy paste those lines in a new [gist](https://gist.github.com/)
+- Type `head -300 gstlaunch-xxxx.stderr` (replacing the filename by the correct one)
 - Copy paste those lines in another new [gist](https://gist.github.com/)
 - Copy paste all the gists links in the issue
 

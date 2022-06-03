@@ -4,7 +4,7 @@
   <img src="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/banner.png?raw=true" height=200px alt="Banner">
 </p>
 
-This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the ffmpeg library files by a wrapper using SynoCommunity ffmpeg.
+This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the original ffmpeg and gstreamer files by a wrapper using SynoCommunity packages.
 
 ## Dependencies
 - DSM 6.2.2-24922 Update 4 (and above)
@@ -30,7 +30,7 @@ Basic command:
 With options:  
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- <flags>`
 
-| Flags | Required | Description                                                                     |
-|-------|----------|---------------------------------------------------------------------------------|
-| -a    | No       | Action flag: choose between patch or unpatch ; example: `-a patch`              |
-| -b    | No       | Branch flag: allows you to choose the wrapper branch to use ; example `-b main` |                                                        
+| Flags | Required | Description                                                                     | Default |
+|-------|----------|---------------------------------------------------------------------------------|---------|
+| -a    | No       | Action flag: choose between patch or unpatch ; example: `-a patch`              | patch   |
+| -b    | No       | Branch flag: allows you to choose the wrapper branch to use ; example `-b main` | main    |                                                  

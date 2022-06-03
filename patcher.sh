@@ -48,7 +48,7 @@ function welcome_motd() {
 
 function restart_packages() {
   if [[ -d $cp_bin_path ]]; then
-    log "INFO" "Restarting CodecPack..."
+    info "Restarting CodecPack..."
     synopkg restart CodecPack
   fi
 
@@ -81,7 +81,7 @@ function patch() {
       wget -q -O - "$repo_base_url/blob/$branch/$filename-wrapper.sh?raw=true" > "$vs_path/bin/$filename"
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
-      chmod u+s "$vs_path/bin/ffmpeg"
+      chmod u+s "$vs_path/bin/$filename"
     fi
   done
 
