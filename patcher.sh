@@ -17,6 +17,7 @@ cp_bin_path=/var/packages/CodecPack/target/bin
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
   "ffmpeg27:ffmpeg"
+  "ffmpeg33:ffmpeg"
   "gst-launch-1.0:gst-launch-1.0"
 )
 
