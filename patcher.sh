@@ -58,9 +58,9 @@ function restart_packages() {
 }
 
 function check_dependencies() {
-  for dependecy in "${dependencies[@]}"; do
-    if [[ ! -d "/var/packages/$dependecy" ]]; then
-      error "Missing $dependecy package, please install it and re-run the patcher."
+  for dependency in "${dependencies[@]}"; do
+    if [[ ! -d "/var/packages/$dependency" ]]; then
+      error "Missing $dependency package, please install it and re-run the patcher."
       exit 1
     fi
   done
