@@ -4,7 +4,7 @@
   <img src="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/banner.png?raw=true" height=200px alt="Banner">
 </p>
 
-This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the original ffmpeg and gstreamer files by a wrapper using SynoCommunity packages.
+This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fortier](https://github.com/th0ma7) and [SynoCommunity](https://github.com/SynoCommunity)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the original ffmpeg and gstreamer files by a wrapper using SynoCommunity packages.
 
 ## Dependencies
 - DSM 6.2.2-24922 Update 4 (and above)
