@@ -45,4 +45,4 @@ newline
 info "========================================[start gst $pid]"
 info "GST_ARGS: $*"
 
-/var/packages/CodecPack/target/pack/bin/gst-launch-1.0.orig "$@" 2> $stderrfile
+/var/packages/gstreamer/target/bin/gst-launch-1.0 "$@" 2> $stderrfile

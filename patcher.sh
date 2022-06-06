@@ -8,7 +8,7 @@ dsm_version=$(cat /etc.defaults/VERSION | grep productversion | sed 's/productve
 repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 action="patch"
 branch="main"
-dependencies=("ffmpeg")
+dependencies=("ffmpeg" "gstreamer")
 wrappers=("ffmpeg" "gst-launch-1.0")
 
 vs_path=/var/packages/VideoStation/target

@@ -4,12 +4,15 @@
   <img src="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/banner.png?raw=true" height=200px alt="Banner">
 </p>
 
-This patcher is designed to simplify the installation steps from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e) (huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fortier](https://github.com/th0ma7) and [SynoCommunity](https://github.com/SynoCommunity)) and enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation by replacing the original ffmpeg and gstreamer files by a wrapper using SynoCommunity packages.
+This patcher is designed to continue the work from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e), to enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation, by replacing the original ffmpeg and gstreamer files by a wrapper using SynoCommunity packages.
+
+Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fortier](https://github.com/th0ma7), [SynoCommunity](https://github.com/SynoCommunity) and all contributors.
 
 ## Dependencies
 - DSM 6.2.2-24922 Update 4 (and above)
 - Video Station 2.4.6-1594 (and above)
 - SynoCommunity ffmpeg 4.2.1-23 (and above) ([help](https://synocommunity.com/#easy-install))
+- SynoCommunity gstreamer 1.20.2 (and above)
 
 ## Supported / Unsupported scenarios
 - **[DTS or EAC3 or TrueHD] + [Any non HEVC standard video format]**: ✅
@@ -32,5 +35,5 @@ With options:
 
 | Flags | Required | Description                                                                     | Default |
 |-------|----------|---------------------------------------------------------------------------------|---------|
-| -a    | No       | Action flag: choose between patch or unpatch ; example: `-a patch`              | patch   |
+| -a    | No       | Action flag: choose between `patch` or `unpatch` ; example: `-a patch`          | patch   |
 | -b    | No       | Branch flag: allows you to choose the wrapper branch to use ; example `-b main` | main    |                                                  
