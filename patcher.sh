@@ -6,6 +6,7 @@
 
 dsm_version=$(cat /etc.defaults/VERSION | grep productversion | sed 's/productversion=//' | tr -d '"')
 repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
+version="2.0"
 action="patch"
 branch="main"
 dependencies=("ffmpeg" "gstreamer")
@@ -36,7 +37,7 @@ function error() {
 }
 
 function welcome_motd() {
-  info "ffmpeg-patcher v1.5"
+  info "ffmpeg-patcher v$version"
 
   motd=$(curl -s -L "$repo_base_url/blob/$branch/motd.txt?raw=true")
   if [ "${#motd}" -ge 1 ]; then
@@ -152,7 +153,7 @@ welcome_motd
 check_dependencies
 
 info "You're running DSM $dsm_version"
-if [[ $dsm_version > 7.0 ]]; then
+if [[ -d /var/packages/CodecPack/target/pack ]]; then
   cp_bin_path=/var/packages/CodecPack/target/pack/bin
   info "Tuned script for DSM $dsm_version"
 fi
