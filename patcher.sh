@@ -9,8 +9,8 @@ repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
 action="patch"
 branch="main"
-dependencies=("ffmpeg")
-wrappers=("ffmpeg")
+dependencies=("ffmpeg" "gstreamer")
+wrappers=("ffmpeg" "gst-launch-1.0")
 
 vs_path=/var/packages/VideoStation/target
 libsynovte_path="$vs_path/lib/libsynovte.so"
@@ -19,6 +19,7 @@ cp_to_patch=(
   "ffmpeg41:ffmpeg"
   "ffmpeg27:ffmpeg"
   "ffmpeg33:ffmpeg"
+  "gst-launch-1.0:gst-launch-1.0"
 )
 
 ###############################
