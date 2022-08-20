@@ -46,3 +46,5 @@ info "========================================[start ffmpeg $pid]"
 info "DEFAULT_ARGS: $*"
 
 /var/packages/ffmpeg/target/bin/ffmpeg "$@" 2> $stderrfile
+
+endprocess
