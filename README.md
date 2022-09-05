@@ -8,6 +8,8 @@ This patcher is designed to continue the work from this [Gist](https://gist.gith
 
 Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fortier](https://github.com/th0ma7), [SynoCommunity](https://github.com/SynoCommunity) and all contributors.
 
+### Also want to patch MediaServer ? [there you go](https://github.com/AlexPresso/mediaserver-ffmpeg-patcher)
+
 ## Dependencies
 - DSM 6.2.2-24922 Update 4 (and above)
 - Video Station 2.4.6-1594 (and above)

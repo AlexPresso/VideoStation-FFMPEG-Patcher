@@ -9,7 +9,7 @@ repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
 action="patch"
 branch="main"
-dependencies=("ffmpeg" "gstreamer")
+dependencies=("VideoStation" "ffmpeg" "gstreamer")
 wrappers=("ffmpeg" "gst-launch-1.0")
 
 vs_path=/var/packages/VideoStation/target
