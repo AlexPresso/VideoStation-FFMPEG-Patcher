@@ -4,7 +4,7 @@
   <img src="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/banner.png?raw=true" height=200px alt="Banner">
 </p>
 
-This patcher is designed to continue the work from this [Gist](https://gist.github.com/BenjaminPoncet/bbef9edc1d0800528813e75c1669e57e), to enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation, by replacing the original ffmpeg and gstreamer files by a wrapper using SynoCommunity packages.
+This patcher is designed to continue the work of [Benjamin Poncet](https://github.com/BenjaminPoncet), to enable **DTS**, **EAC3** and **TrueHD** support to Synology VideoStation, by replacing the original ffmpeg and gstreamer files by a wrapper using SynoCommunity packages.
 
 Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fortier](https://github.com/th0ma7), [SynoCommunity](https://github.com/SynoCommunity) and all contributors.
 
@@ -19,7 +19,7 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 ## Supported / Unsupported scenarios
 - **[DTS or EAC3 or TrueHD] + [Any non HEVC standard video format]**: ✅
 - **[no DTS, no EAC3, no TrueHD] + [HEVC]**: ✅
-- **[DTS or EAC3 or TrueHD] + [HEVC]**: ⚠️ Not working on architectures where Advanced Media Extensions uses GStreamer for audio decoding (Please don't submit any more issue related to this scenario, I'm working on it, see [#33](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/pull/33))
+- **[DTS or EAC3 or TrueHD] + [HEVC]**: ✅
 
 ## Instructions
 - Check that you meet the required [dependencies](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#dependencies)
