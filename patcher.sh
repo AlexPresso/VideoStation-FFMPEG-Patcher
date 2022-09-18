@@ -36,6 +36,13 @@ function error() {
   log "ERROR" "$1"
 }
 
+function root_check() {
+  if [[ "$EUID" -ne 0 ]]; then
+    error "This tool needs root access (please run 'sudo -i' before proceeding)."
+    exit 1
+  fi
+}
+
 function welcome_motd() {
   info "ffmpeg-patcher v$version"
 
@@ -59,12 +66,18 @@ function restart_packages() {
 }
 
 function check_dependencies() {
+  missingDeps=false
+
   for dependency in "${dependencies[@]}"; do
     if [[ ! -d "/var/packages/$dependency" ]]; then
       error "Missing $dependency package, please install it and re-run the patcher."
-      exit 1
+      missingDeps=true
     fi
   done
+
+  if [[ $missingDeps -eq 1 ]]; then
+    exit 1
+  fi
 }
 
 ################################
@@ -141,6 +154,9 @@ function unpatch() {
 ################################
 # ENTRYPOINT
 ################################
+root_check
+check_dependencies
+
 while getopts a:b: flag; do
   case "${flag}" in
     a) action=${OPTARG};;
@@ -150,7 +166,6 @@ while getopts a:b: flag; do
 done
 
 welcome_motd
-check_dependencies
 
 info "You're running DSM $dsm_version"
 if [[ -d /var/packages/CodecPack/target/pack ]]; then
@@ -162,3 +177,4 @@ case "$action" in
   unpatch) unpatch;;
   patch) patch;;
 esac
+
