@@ -74,7 +74,7 @@ function check_dependencies() {
     fi
   done
 
-  if [[ $missingDeps ]]; then
+  if [[ $missingDeps -eq 1 ]]; then
     exit 1
   fi
 }
