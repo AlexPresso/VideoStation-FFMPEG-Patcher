@@ -1,4 +1,4 @@
-# VideoStation-FFMPEG-Patcher 
+# VideoStation-FFMPEG-Patcher
 
 <p align="center">
   <img src="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/blob/main/banner.png?raw=true" height=200px alt="Banner">
