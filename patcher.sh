@@ -160,7 +160,8 @@ while getopts a:b: flag; do
   case "${flag}" in
     a) action=${OPTARG};;
     b) branch=${OPTARG};;
-    *) echo "usage: $0 [-a patch|unpatch] [-b branch]" >&2; exit 1;;
+    p) repo_base_url="${OPTARG}/AlexPresso/VideoStation-FFMPEG-Patcher";;
+    *) echo "usage: $0 [-a patch|unpatch] [-b branch] [-p http://proxy]" >&2; exit 1;;
   esac
 done
 
