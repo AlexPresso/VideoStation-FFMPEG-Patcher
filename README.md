@@ -35,7 +35,8 @@ Basic command:
 With options:  
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- <flags>`
 
-| Flags | Required | Description                                                                     | Default |
-|-------|----------|---------------------------------------------------------------------------------|---------|
-| -a    | No       | Action flag: choose between `patch` or `unpatch` ; example: `-a patch`          | patch   |
-| -b    | No       | Branch flag: allows you to choose the wrapper branch to use ; example `-b main` | main    |                                                  
+| Flags | Required | Description                                                                               | Default            |
+|-------|----------|-------------------------------------------------------------------------------------------|--------------------|
+| -a    | No       | Action flag: choose between `patch` or `unpatch` ; example: `-a patch`                    | patch              |
+| -b    | No       | Branch flag: allows you to choose the wrapper branch to use ; example `-b main`           | main               |                                                  
+| -p    | No       | Proxy flag: allows you to use a proxy to connect to github ; example `-p http://my-proxy` | https://github.com |
