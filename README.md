@@ -14,7 +14,6 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 - DSM 6.2.2-24922 Update 4 (and above)
 - Video Station 2.4.6-1594 (and above)
 - SynoCommunity ffmpeg 4.2.1-23 (and above) ([help](https://synocommunity.com/#easy-install))
-- SynoCommunity gstreamer 1.20.2 (and above)
 
 ## Supported / Unsupported scenarios
 - **[DTS or EAC3 or TrueHD] + [Any non HEVC standard video format]**: ✅
@@ -37,7 +36,8 @@ Basic command:
 With options:  
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- <flags>`
 
-| Flags | Required | Description                                                                     | Default |
-|-------|----------|---------------------------------------------------------------------------------|---------|
-| -a    | No       | Action flag: choose between `patch` or `unpatch` ; example: `-a patch`          | patch   |
-| -b    | No       | Branch flag: allows you to choose the wrapper branch to use ; example `-b main` | main    |                                                  
+| Flags | Required | Description                                                                               | Default            |
+|-------|----------|-------------------------------------------------------------------------------------------|--------------------|
+| -a    | No       | Action flag: choose between `patch` or `unpatch` ; example: `-a patch`                    | patch              |
+| -b    | No       | Branch flag: allows you to choose the wrapper branch to use ; example `-b main`           | main               |                                                  
+| -p    | No       | Proxy flag: allows you to use a proxy to connect to github ; example `-p http://my-proxy` | https://github.com |
