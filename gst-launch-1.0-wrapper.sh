@@ -23,7 +23,10 @@ function info() {
 }
 
 function handle_error() {
-  log "ERROR" "Error on line $(caller) "
+  log "ERROR" "An error occurred, here is the $stderrfile content: "
+  newline
+  cat "$stderrfile" >> $logfile
+  newline
   endprocess
 }
 

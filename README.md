@@ -14,8 +14,9 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 - DSM 6.2.2-24922 Update 4 (and above)
 - Video Station 2.4.6-1594 (and above)
 - SynoCommunity ffmpeg 4.2.1-23 (and above) ([help](https://synocommunity.com/#easy-install))
+- SynoCommunity gstreamer 1.20.2 (and above) ([help](https://synocommunity.com/#easy-install))
 
-## Supported / Unsupported scenarios
+## Supported scenarios
 - **[DTS or EAC3 or TrueHD] + [Any non HEVC standard video format]**: ✅
 - **[no DTS, no EAC3, no TrueHD] + [HEVC]**: ✅
 - **[DTS or EAC3 or TrueHD] + [HEVC]**: ✅
