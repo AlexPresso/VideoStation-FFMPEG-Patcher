@@ -7,6 +7,7 @@
 pid=$$
 stderrfile="/tmp/ffmpeg-$pid.stderr"
 logfile="/tmp/ffmpeg.log"
+errcode=0
 
 #########################
 # UTILS
@@ -24,6 +25,7 @@ function info() {
 
 function handle_error() {
   log "ERROR" "Error on line $(caller)"
+  errcode=1
   endprocess
 }
 
@@ -31,7 +33,7 @@ function endprocess() {
   info "========================================[end ffmpeg $pid]"
   newline
   rm -f "$stderrfile"
-  exit 0
+  exit $errcode
 }
 
 #########################
