@@ -31,7 +31,7 @@ function endprocess() {
   info "========================================[end ffmpeg $pid]"
   newline
   rm -f "$stderrfile"
-  exit 1
+  exit 0
 }
 
 #########################
