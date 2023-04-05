@@ -4,7 +4,8 @@
 # VARS
 ###############################
 
-dsm_version=$(cat /etc.defaults/VERSION | grep productversion | sed 's/productversion=//' | tr -d '"')
+source "/etc/VERSION"
+dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
 action="patch"
