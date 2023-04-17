@@ -35,11 +35,11 @@ A clear and concise description of what the bug is.
 - Copy paste those lines in a new [gist](https://gist.github.com/)
 - Add the gist link to the issue
 
-## `ffmpeg-FFMxxxx.stderr` (containing chunks transcoding operations)
-- When you ran `ls -al | grep ffmpeg` you should have seen another file that looks like `ffmpeg-FFMxxxx.stderr`
-- Type `tail -100 ffmpeg-FFMxxxx.stderr` (replacing the filename by the correct one)
+## `ffmpeg-xxxx.stderr` (containing chunks transcoding operations)
+- When you ran `ls -al | grep ffmpeg` you should have seen another file that looks like `ffmpeg-xxxx.stderr` in case of error, the file may not be there, in that specific case, you can ignore these steps.
+- Type `tail -100 ffmpeg-xxxx.stderr` (replacing the filename by the correct one)
 - Copy paste those lines in a new [gist](https://gist.github.com/)
-- Type `head -300 ffmpeg-FFMxxxx.stderr` (replacing the filename by the correct one)
+- Type `head -300 ffmpeg-xxxx.stderr` (replacing the filename by the correct one)
 - Copy paste those lines in another new [gist](https://gist.github.com/)
 - Copy paste all the gists links in the issue
 
