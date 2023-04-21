@@ -135,7 +135,7 @@ function patch() {
   sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
 
   info "Writing patchconf file"
-  echo "\$patchversion=$version" > "$patchconf_path"
+  echo "patchversion=\"$version\"" > "$patchconf_path"
 
   restart_packages
 
