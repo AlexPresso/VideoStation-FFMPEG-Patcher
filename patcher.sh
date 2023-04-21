@@ -6,15 +6,16 @@
 
 source "/etc/VERSION"
 dsm_version="$productversion $buildnumber-$smallfixnumber"
-repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
+repo_base_url="https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="undefined"
 action="patch"
 branch="main"
 dependencies=("VideoStation" "ffmpeg")
 wrappers=("ffmpeg")
 
-vs_path=/var/packages/VideoStation/target
-patchconf_path="$vs_path/../conf/patchconf"
+vs_root_path=/var/packages/VideoStation
+vs_path="$vs_root_path/target"
+patchconf_path="$vs_root_path/conf/patchconf"
 libsynovte_path="$vs_path/lib/libsynovte.so"
 cp_bin_path=/var/packages/CodecPack/target/bin
 cp_to_patch=(
@@ -45,21 +46,28 @@ function root_check() {
 }
 
 function fetch_version() {
-  info "fetching latest version..."
-  version=$(curl -s -L "$repo_base_url/raw/branch/$branch/VERSION")
+  info "fetching latest wrapper version..."
+  version=$(curl -s -L "$repo_base_url/$branch/VERSION")
 
-  if [ "${#version}" -le 2 ]; then
+  if [[ "${#version}" < 1 || "${#version}" > 1 ]]; then
     error "Failed to fetch version"
     exit 1
   fi
 
-  info "latest version is $version"
+  info "latest wrapper version is v$version"
+
+  if [[ -f "$patchconf_path" ]]; then
+    source "$patchconf_path"
+    info "current installed wrapper version is v$patchversion"
+  else
+    info "no previous version installed"
+  fi
 }
 
 function welcome_motd() {
-  info "ffmpeg-patcher v$version"
+  info "====== ffmpeg-patcher ======"
 
-  motd=$(curl -s -L "$repo_base_url/raw/branch/$branch/motd.txt")
+  motd=$(curl -s -L "$repo_base_url/$branch/motd.txt")
   if [ "${#motd}" -ge 1 ]; then
     log "Message of the day"
     echo ""
@@ -106,7 +114,7 @@ function patch() {
       mv -n "$vs_path/bin/$filename" "$vs_path/bin/$filename.orig"
 
       info "Downloading and installing $filename's wrapper..."
-      wget -q -O - "$repo_base_url/raw/branch/$branch/$filename-wrapper.sh" > "$vs_path/bin/$filename"
+      wget -q -O - "$repo_base_url/$branch/$filename-wrapper.sh" > "$vs_path/bin/$filename"
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
@@ -137,10 +145,7 @@ function patch() {
   info "Writing patchconf file"
   echo "patchversion=\"$version\"" > "$patchconf_path"
 
-  restart_packages
-
-  echo ""
-  info "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
+  info "Done patching, packages will now be restarted..."
 }
 
 function unpatch() {
@@ -164,10 +169,7 @@ function unpatch() {
   info "Deleting patchconf file"
   rm -f "$patchconf_path"
 
-  restart_packages
-
-  echo ""
-  info "unpatch complete"
+  info "Unpatch complete, packages will now be restarted..."
 }
 
 function update() {
@@ -180,8 +182,11 @@ function update() {
 
   if [[ "$patchversion" < "$version" ]]; then
     info "Updating..."
+
     unpatch
     patch
+
+    info "Done updating."
   else
     info "Already running latest version"
   fi
@@ -217,3 +222,6 @@ case "$action" in
   update) update;;
 esac
 
+restart_packages
+echo ""
+info "Done, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
