@@ -29,6 +29,13 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 - Use the [following](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage) command (Basic command) to execute the patch
 - You'll have to re-run the patcher everytime you update VideoStation, Advanced Media Extensions and DSM
 
+## Automated updates
+If you want to add automatic update, you can create a scheduled task ([help](https://kb.synology.com/en-uk/DSM/help/DSM/AdminCenter/system_taskscheduler?version=7)) using `root` user with the following example script (feel free to customize other parameters):
+```shell
+#!/bin/bash
+curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- -a update
+```
+
 ## Usage
 Basic command:  
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`   
@@ -37,6 +44,6 @@ With options:
 
 | Flags | Required | Description                                                                               | Default            |
 |-------|----------|-------------------------------------------------------------------------------------------|--------------------|
-| -a    | No       | Action flag: choose between `patch` or `unpatch` ; example: `-a patch`                    | patch              |
+| -a    | No       | Action flag: choose between `patch`, `unpatch` or `update` ; example: `-a patch`          | patch              |
 | -b    | No       | Branch flag: allows you to choose the wrapper branch to use ; example `-b main`           | main               |                                                  
 | -p    | No       | Proxy flag: allows you to use a proxy to connect to github ; example `-p http://my-proxy` | https://github.com |

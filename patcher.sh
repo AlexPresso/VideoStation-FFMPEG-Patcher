@@ -7,13 +7,14 @@
 source "/etc/VERSION"
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
-version="2.0"
+version="undefined"
 action="patch"
 branch="main"
 dependencies=("VideoStation" "ffmpeg")
 wrappers=("ffmpeg")
 
 vs_path=/var/packages/VideoStation/target
+patchconf_path="$vs_path/../conf/patchconf"
 libsynovte_path="$vs_path/lib/libsynovte.so"
 cp_bin_path=/var/packages/CodecPack/target/bin
 cp_to_patch=(
@@ -43,10 +44,22 @@ function root_check() {
   fi
 }
 
+function fetch_version() {
+  info "fetching latest version..."
+  version=$(curl -s -L "$repo_base_url/raw/branch/$branch/VERSION")
+
+  if [ "${#version}" -le 2 ]; then
+    error "Failed to fetch version"
+    exit 1
+  fi
+
+  info "latest version is $version"
+}
+
 function welcome_motd() {
   info "ffmpeg-patcher v$version"
 
-  motd=$(curl -s -L "$repo_base_url/blob/$branch/motd.txt?raw=true")
+  motd=$(curl -s -L "$repo_base_url/raw/branch/$branch/motd.txt")
   if [ "${#motd}" -ge 1 ]; then
     log "Message of the day"
     echo ""
@@ -93,7 +106,7 @@ function patch() {
       mv -n "$vs_path/bin/$filename" "$vs_path/bin/$filename.orig"
 
       info "Downloading and installing $filename's wrapper..."
-      wget -q -O - "$repo_base_url/blob/$branch/$filename-wrapper.sh?raw=true" > "$vs_path/bin/$filename"
+      wget -q -O - "$repo_base_url/raw/branch/$branch/$filename-wrapper.sh" > "$vs_path/bin/$filename"
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
@@ -121,6 +134,9 @@ function patch() {
   info "Enabling eac3, dts and truehd"
   sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
 
+  info "Writing patchconf file"
+  echo "\$patchversion=$version" > "$patchconf_path"
+
   restart_packages
 
   echo ""
@@ -145,10 +161,30 @@ function unpatch() {
     done
   fi
 
+  info "Deleting patchconf file"
+  rm -f "$patchconf_path"
+
   restart_packages
 
   echo ""
   info "unpatch complete"
+}
+
+function update() {
+  info "====== Update procedure ======"
+  patchversion=0
+
+  if [[ -f "$patchconf_path" ]]; then
+    source "$patchconf_path"
+  fi
+
+  if [[ "$patchversion" < "$version" ]]; then
+    info "Updating..."
+    unpatch
+    patch
+  else
+    info "Already running latest version"
+  fi
 }
 
 ################################
@@ -166,6 +202,7 @@ while getopts a:b:p: flag; do
   esac
 done
 
+fetch_version
 welcome_motd
 
 info "You're running DSM $dsm_version"
@@ -177,5 +214,6 @@ fi
 case "$action" in
   unpatch) unpatch;;
   patch) patch;;
+  update) update;;
 esac
 
