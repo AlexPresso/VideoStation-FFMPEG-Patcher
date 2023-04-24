@@ -8,6 +8,7 @@ source "/etc/VERSION"
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="undefined"
+patchversion=0
 action="patch"
 branch="main"
 dependencies=("VideoStation" "ffmpeg")
@@ -49,7 +50,7 @@ function fetch_version() {
   info "fetching latest wrapper version..."
   version=$(curl -s -L "$repo_base_url/$branch/VERSION")
 
-  if [[ "${#version}" < 1 || "${#version}" > 1 ]]; then
+  if [[ "${#version}" -lt 1 || "${#version}" -gt 4 ]]; then
     error "Failed to fetch version"
     exit 1
   fi
@@ -174,11 +175,6 @@ function unpatch() {
 
 function update() {
   info "====== Update procedure ======"
-  patchversion=0
-
-  if [[ -f "$patchconf_path" ]]; then
-    source "$patchconf_path"
-  fi
 
   if [[ "$patchversion" < "$version" ]]; then
     info "Updating..."
