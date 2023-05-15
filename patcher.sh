@@ -10,7 +10,7 @@ repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
 action="patch"
 branch="main"
-ffmpegversion="4"
+ffmpegversion=""
 wrappers=("ffmpeg")
 
 vs_path=/var/packages/VideoStation/target
@@ -169,7 +169,7 @@ while getopts a:b:p:v: flag; do
     b) branch=${OPTARG};;
     p) repo_base_url="${OPTARG}/AlexPresso/VideoStation-FFMPEG-Patcher";;
     v) ffmpegversion="${OPTARG}";;
-    *) echo "usage: $0 [-a patch|unpatch] [-b branch] [-p http://proxy]" >&2; exit 1;;
+    *) echo "usage: $0 [-a patch|unpatch] [-b branch] [-p http://proxy] [-v ffmpegVersion]" >&2; exit 1;;
   esac
 done
 
