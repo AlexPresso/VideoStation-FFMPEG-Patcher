@@ -173,6 +173,10 @@ while getopts a:b:p:v: flag; do
   esac
 done
 
+if [[ "$ffmpegversion" == "4" ]]; then
+  ffmpegversion=""
+fi
+
 dependencies=("VideoStation" "ffmpeg$ffmpegversion")
 
 welcome_motd
