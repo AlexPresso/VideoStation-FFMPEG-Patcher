@@ -50,6 +50,6 @@ newline
 info "========================================[start ffmpeg $pid]"
 info "DEFAULT_ARGS: $*"
 
-/var/packages/VideoStation/target/bin/@ffmpeg_version@ "$@" 2> $stderrfile
+/var/packages/@ffmpeg_version@/target/bin/ffmpeg "$@" 2> $stderrfile
 
 endprocess

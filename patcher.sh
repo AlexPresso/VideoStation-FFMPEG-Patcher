@@ -115,7 +115,7 @@ function patch() {
   fi
 
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
-  sed -i "s/@ffmpeg_version@/ffmpeg$ffmpegversion" "$vs_path/bin/ffmpeg"
+  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_path/bin/ffmpeg"
 
   info "Saving current libsynovte.so as libsynovte.so.orig"
   cp -n "$libsynovte_path" "$libsynovte_path.orig"
