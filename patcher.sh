@@ -114,8 +114,8 @@ function patch() {
     done
   fi
 
-  info "Creating symlink to ffmpeg$ffmpegversion"
-  ln -s -f "$vs_path/bin/wrapper_ffmpeg" "/var/packages/ffmpeg$ffmpegversion/target/bin/ffmpeg"
+  info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
+  sed -i "s/@ffmpeg_version@/ffmpeg$ffmpegversion" "$vs_path/bin/ffmpeg"
 
   info "Saving current libsynovte.so as libsynovte.so.orig"
   cp -n "$libsynovte_path" "$libsynovte_path.orig"
@@ -147,9 +147,6 @@ function unpatch() {
       mv -T -f "$filename" "${filename::-5}"
     done
   fi
-
-  info "Deleting symlink to ffmpeg$ffmpegversion"
-  rm -f "$vs_path/bin/wrapper_ffmpeg"
 
   restart_packages
 
