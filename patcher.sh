@@ -10,7 +10,7 @@ repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
 action="patch"
 branch="main"
-dependencies=("VideoStation" "ffmpeg")
+ffmpegversion=""
 wrappers=("ffmpeg")
 
 vs_path=/var/packages/VideoStation/target
@@ -114,6 +114,9 @@ function patch() {
     done
   fi
 
+  info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
+  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_path/bin/ffmpeg"
+
   info "Saving current libsynovte.so as libsynovte.so.orig"
   cp -n "$libsynovte_path" "$libsynovte_path.orig"
   chown VideoStation:VideoStation "$libsynovte_path.orig"
@@ -157,14 +160,21 @@ function unpatch() {
 root_check
 check_dependencies
 
-while getopts a:b:p: flag; do
+while getopts a:b:p:v: flag; do
   case "${flag}" in
     a) action=${OPTARG};;
     b) branch=${OPTARG};;
     p) repo_base_url="${OPTARG}/AlexPresso/VideoStation-FFMPEG-Patcher";;
-    *) echo "usage: $0 [-a patch|unpatch] [-b branch] [-p http://proxy]" >&2; exit 1;;
+    v) ffmpegversion="${OPTARG}";;
+    *) echo "usage: $0 [-a patch|unpatch] [-b branch] [-p http://proxy] [-v ffmpegVersion]" >&2; exit 1;;
   esac
 done
+
+if [[ "$ffmpegversion" == "4" ]]; then
+  ffmpegversion=""
+fi
+
+dependencies=("VideoStation" "ffmpeg$ffmpegversion")
 
 welcome_motd
 
