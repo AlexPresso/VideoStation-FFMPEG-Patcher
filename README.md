@@ -27,7 +27,7 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 - Connect to your NAS using SSH (admin user required) ([help](https://www.synology.com/en-global/knowledgebase/DSM/tutorial/General_Setup/How_to_login_to_DSM_with_root_permission_via_SSH_Telnet))
 - Use the command `sudo -i` to switch to root user
 - Use the [following](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage) command (Basic command) to execute the patch
-  - Note : Basic command uses **ffmpeg4** by default, if you want to use a different ffmpeg version (i.e. **ffmpeg5** or **ffmpeg6**, please check the command [flags](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage).
+  - Note : Basic command uses **ffmpeg4** by default, if you want to use a different ffmpeg version (i.e. **ffmpeg5** or **ffmpeg6**), please check the command [flags](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage).
 - You'll have to re-run the patcher everytime you update VideoStation, Advanced Media Extensions and DSM
 
 ## Usage
