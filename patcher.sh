@@ -192,6 +192,10 @@ function patch() {
         > "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
     done
 
+    mkdir -p "$vs_path/lib/gstreamer/dri"
+    mkdir -p "$vs_path/lib/gstreamer/x264-10bit"
+    mkdir -p "$vs_path/lib/gstreamer/x265-10bit"
+
     for lib in "${gstreamer_libs[@]}"; do
       info "Downloading $lib to gstreamer directory..."
 

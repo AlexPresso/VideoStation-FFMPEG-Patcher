@@ -18,7 +18,7 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 ## Supported scenarios
 - **[DTS or EAC3 or TrueHD] + [Any non HEVC standard video format]**: ✅
 - **[no DTS, no EAC3, no TrueHD] + [HEVC]**: ✅
-- **[DTS or EAC3 or TrueHD] + [HEVC]**: ✅
+- **[DTS or EAC3 or TrueHD] + [HEVC]**: ✅ (credits to @nap-liu)
 
 ## Instructions
 - Check that you meet the required [dependencies](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#dependencies)
