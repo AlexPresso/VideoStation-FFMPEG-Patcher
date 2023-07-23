@@ -79,6 +79,9 @@ gstreamer_libs=(
   "libxvidcore.so.4"
   "libzvbi.so.0"
   "libzvbi-chains.so.0"
+  "dri/dummy_drv_video.so"
+  "x264-10bit/libx264.so.146"
+  "x265-10bit/libx265.so.59"
 )
 
 ###############################

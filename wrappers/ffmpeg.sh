@@ -50,6 +50,7 @@ newline
 info "========================================[start ffmpeg $pid]"
 info "DEFAULT_ARGS: $*"
 
-/var/packages/@ffmpeg_version@/target/bin/ffmpeg "$@" 2> $stderrfile
+/var/packages/@ffmpeg_version@/target/bin/ffmpeg "$@" <&0 2> $stderrfile &
 
-endprocess
+wait $!
+info "========================================[end ffmpeg $pid]"

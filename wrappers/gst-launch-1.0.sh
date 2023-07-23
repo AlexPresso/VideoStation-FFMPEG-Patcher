@@ -48,4 +48,7 @@ newline
 info "========================================[start gst-launch $pid]"
 info "GST_ARGS: $*"
 
-/var/packages/VideoStation/target/bin/gst-launch-1.0.orig "$@" 2> $stderrfile
+/var/packages/VideoStation/target/bin/gst-launch-1.0.orig "$@" 2> $stderrfile &
+
+wait $!
+info "========================================[end gst-launch $pid]"
