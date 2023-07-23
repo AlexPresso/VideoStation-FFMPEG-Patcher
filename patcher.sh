@@ -5,21 +5,83 @@
 ###############################
 
 source "/etc/VERSION"
+cpu_platform=$(</proc/syno_platform)
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
 action="patch"
 branch="main"
 ffmpegversion=""
-wrappers=("ffmpeg")
+wrappers=(
+  "ffmpeg"
+  "gst-launch-1.0"
+  "gst-inspect-1.0"
+)
 
 vs_path=/var/packages/VideoStation/target
 libsynovte_path="$vs_path/lib/libsynovte.so"
-cp_bin_path=/var/packages/CodecPack/target/bin
+cp_path=/var/packages/CodecPack/target/pack
+cp_bin_path="$cp_path/bin"
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
   "ffmpeg27:ffmpeg"
   "ffmpeg33:ffmpeg"
+  "gst-launch-1.0:gst-launch-1.0"
+  "gst-inspect-1.0:gst-inspect-1.0"
+)
+
+gstreamer_platforms=(
+  "REALTEK_RTD1296"
+)
+gstreamer_plugins=(
+  "libgstdtsdec"
+  "libgstlibav"
+)
+gstreamer_libs=(
+  "libavcodec-ffmpeg.so.56"
+  "libavformat-ffmpeg.so.56"
+  "libavutil-ffmpeg.so.54"
+  "libbluray.so.1"
+  "libdca.so.0"
+  "libgme.so.0"
+  "libgnutls-deb0.so.28"
+  "libgsm.so.1"
+  "libhogweed.so.4"
+  "libmodplug.so.1"
+  "libnettle.so.6"
+  "libnuma.so.1"
+  "libopenjpeg.so.5"
+  "libopenjpeg_JPWL.so.5"
+  "libopus.so.0"
+  "liborc-0.4.so.0"
+  "libp11-kit.so.0"
+  "libpng12.so.0"
+  "librtmp.so.1"
+  "libschroedinger-1.0.so.0"
+  "libshine.so.3"
+  "libsoxr.so.0"
+  "libspeex.so.1"
+  "libssh-gcrypt.so.4"
+  "libssh-gcrypt_threads.so.4"
+  "libswresample-ffmpeg.so.1"
+  "libtasn1.so.6"
+  "libtheora.so.0"
+  "libtheoradec.so.1"
+  "libtheoraenc.so.1"
+  "libtwolame.so.0"
+  "libva.so.1"
+  "libvpx.so.2"
+  "libvpx.so.2.0"
+  "libwavpack.so.1"
+  "libwebp.so.5"
+  "libx264.so.146"
+  "libx265.so.59"
+  "libxvidcore.so.4"
+  "libzvbi.so.0"
+  "libzvbi-chains.so.0"
+  "dri/dummy_drv_video.so"
+  "x264-10bit/libx264.so.146"
+  "x265-10bit/libx265.so.59"
 )
 
 ###############################
@@ -57,9 +119,15 @@ function welcome_motd() {
 
 function restart_packages() {
   if [[ -d $cp_bin_path ]]; then
+    info "Clearing CodecPack gstreamer cache..."
+    rm -f "$cp_path/etc/gstreamer-1.0/registry.*.bin"
+
     info "Restarting CodecPack..."
     synopkg restart CodecPack
   fi
+
+  info "Clearing VideoStation gstreamer cache..."
+  rm -f "$vs_path/etc/gstreamer-1.0/registry.*.bin"
 
   info "Restarting VideoStation..."
   synopkg restart VideoStation
@@ -93,7 +161,7 @@ function patch() {
       mv -n "$vs_path/bin/$filename" "$vs_path/bin/$filename.orig"
 
       info "Downloading and installing $filename's wrapper..."
-      wget -q -O - "$repo_base_url/blob/$branch/$filename-wrapper.sh?raw=true" > "$vs_path/bin/$filename"
+      wget -q -O - "$repo_base_url/blob/$branch/wrappers/$filename.sh?raw=true" > "$vs_path/bin/$filename"
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
@@ -112,6 +180,34 @@ function patch() {
         ln -s -f "$vs_path/bin/$target" "$cp_bin_path/$filename"
       fi
     done
+  fi
+
+  if [[ "${gstreamer_platforms[*]}" =~ $cpu_platform ]]; then
+    info "Downloading gstreamer plugins..."
+
+    for plugin in "${gstreamer_plugins[@]}"; do
+      info "Downloading $plugin to gstreamer directory..."
+
+      wget -q -O - "$repo_base_url/raw/$branch/plugins/$plugin.so" \
+        > "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+    done
+
+    mkdir -p "$vs_path/lib/gstreamer/dri"
+    mkdir -p "$vs_path/lib/gstreamer/x264-10bit"
+    mkdir -p "$vs_path/lib/gstreamer/x265-10bit"
+
+    for lib in "${gstreamer_libs[@]}"; do
+      info "Downloading $lib to gstreamer directory..."
+
+      wget -q -O - "$repo_base_url/raw/$branch/libs/$lib" \
+        > "$vs_path/lib/gstreamer/$lib"
+    done
+
+    info "Saving current GSTOmx configuration..."
+    mv -n "$vs_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf.orig"
+
+    info "Injecting GSTOmx configuration..."
+    cp -n "$cp_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf"
   fi
 
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
@@ -146,6 +242,21 @@ function unpatch() {
       info "Restoring CodecPack's $filename"
       mv -T -f "$filename" "${filename::-5}"
     done
+  fi
+
+  if [[ "${gstreamer_platforms[*]}" =~ $cpu_platform ]]; then
+    for plugin in "${gstreamer_plugins[@]}"; do
+      info "Removing gstreamer's $plugin plugin"
+      rm -f "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+    done
+
+    for lib in "${gstreamer_libs[@]}"; do
+      info "Removing gstreamer's $lib library"
+      rm -f "$vs_path/lib/gstreamer/$lib"
+    done
+
+    info "Restoring GSTOmx configuration..."
+    mv -T -f "$vs_path/etc/gstomx.conf.orig" "$vs_path/etc/gstomx.conf"
   fi
 
   restart_packages

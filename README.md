@@ -15,10 +15,10 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 - Video Station 2.4.6-1594 (and above)
 - SynoCommunity ffmpeg 4.x.x, ffmpeg 5.x.x or ffmpeg 6.x.x ([help](https://synocommunity.com/#easy-install))
 
-## Supported / Unsupported scenarios
+## Supported scenarios
 - **[DTS or EAC3 or TrueHD] + [Any non HEVC standard video format]**: ✅
 - **[no DTS, no EAC3, no TrueHD] + [HEVC]**: ✅
-- **[DTS or EAC3 or TrueHD] + [HEVC]**: ⚠️ Not working on architectures where Advanced Media Extensions uses GStreamer for audio decoding (Please don't submit any more issue related to this scenario, I'm working on it, see [#33](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/pull/33))
+- **[DTS or EAC3 or TrueHD] + [HEVC]**: ✅ (credits to @nap-liu)
 
 ## Instructions
 - Check that you meet the required [dependencies](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#dependencies)
