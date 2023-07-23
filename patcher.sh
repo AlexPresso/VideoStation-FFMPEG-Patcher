@@ -39,7 +39,6 @@ gstreamer_plugins=(
 gstreamer_libs=(
   "libdca.so.0"
   "liborc-0.4.so.0"
-  "liborc-test-0.4.so.0"
 )
 
 ###############################
@@ -140,16 +139,22 @@ function patch() {
     for plugin in "${gstreamer_plugins[@]}"; do
       info "Downloading $plugin to gstreamer directory..."
 
-      wget -q -O - "$repo_base_url/blob/$branch/plugins/$plugin.so?raw=true" \
+      wget -q -O - "$repo_base_url/raw/$branch/plugins/$plugin.so" \
         > "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
     done
 
     for lib in "${gstreamer_libs[@]}"; do
       info "Downloading $lib to gstreamer directory..."
 
-      wget -q -O - "$repo_base_url/blob/$branch/libs/$lib.so?raw=true" \
-        > "$vs_path/lib/gstreamer/$lib.so"
+      wget -q -O - "$repo_base_url/raw/$branch/libs/$lib" \
+        > "$vs_path/lib/gstreamer/$lib"
     done
+
+    info "Saving current GSTOmx configuration..."
+    mv -n "$vs_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf.orig"
+
+    info "Injecting GSTOmx configuration..."
+    cp -n "$cp_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf"
   fi
 
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
@@ -194,8 +199,11 @@ function unpatch() {
 
     for lib in "${gstreamer_libs[@]}"; do
       info "Removing gstreamer's $lib library"
-      rm -f "$vs_path/lib/gstreamer/$lib.so"
+      rm -f "$vs_path/lib/gstreamer/$lib"
     done
+
+    info "Restoring GSTOmx configuration..."
+    mv -T -f "$vs_path/etc/gstomx.conf.orig" "$vs_path/etc/gstomx.conf"
   fi
 
   restart_packages
