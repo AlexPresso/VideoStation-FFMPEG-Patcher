@@ -45,7 +45,7 @@ trap endprocess SIGTERM
 trap handle_error ERR
 
 newline
-info "========================================[start gst $pid]"
+info "========================================[start gst-launch $pid]"
 info "GST_ARGS: $*"
 
-/var/packages/CodecPack/target/pack/bin/gst-launch-1.0.orig "$@" 2> $stderrfile
+/var/packages/VideoStation/target/bin/gst-launch-1.0.orig "$@" 2> $stderrfile

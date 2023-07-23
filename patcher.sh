@@ -12,12 +12,16 @@ version="2.0"
 action="patch"
 branch="main"
 ffmpegversion=""
-wrappers=("ffmpeg" "gst-launch-1.0")
+wrappers=(
+  "ffmpeg"
+  "gst-launch-1.0"
+  "gst-inspect-1.0"
+)
 
 vs_path=/var/packages/VideoStation/target
 libsynovte_path="$vs_path/lib/libsynovte.so"
-cp_path=/var/packages/CodecPack/target
-cp_bin_path="$cp_path/pack/bin"
+cp_path=/var/packages/CodecPack/target/pack
+cp_bin_path="$cp_path/bin"
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
   "ffmpeg27:ffmpeg"
@@ -25,8 +29,12 @@ cp_to_patch=(
   "gst-launch-1.0:gst-launch-1.0"
   "gst-inspect-1.0:gst-inspect-1.0"
 )
+
 gstreamer_platforms=(
   "REALTEK_RTD1296"
+)
+gstreamer_plugins=(
+  "libgstdtsdec"
 )
 
 ###############################
@@ -124,14 +132,12 @@ function patch() {
   if [[ "${gstreamer_platforms[*]}" =~ $cpu_platform ]]; then
     info "Downloading gstreamer plugins..."
 
-    wget -q -O - http://launchpadlibrarian.net/220569823/gstreamer1.0-plugins-bad_1.6.0-1ubuntu1_arm64.deb \
-      > "/tmp/gst-plugins-bad.deb"
+    for plugin in "${gstreamer_plugins[@]}"; do
+      info "Downloading $plugin to gstreamer directory..."
 
-    7z -o "/tmp/gst-plugins-bad" x "/tmp/gst-plugins-bad.deb"
-    tar -xf "/tmp/gst-plugins-bad/data.tar" -C "/tmp/gst-plugins-bad"
-
-    info "Copying plugins to gstreamer directory..."
-    cp "/tmp/gst-plugins-bad/usr/lib/aarch64-linux-gnu/gstreamer-1.0/*.so" "$cp_path/pack/lib/gstreamer/gstreamer-1.0"
+      wget -q -O - "$repo_base_url/blob/$branch/lib/$plugin.so?raw=true" \
+        > "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+    done
   fi
 
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
@@ -165,6 +171,13 @@ function unpatch() {
     find $cp_bin_path -type f -name "*.orig" | while read -r filename; do
       info "Restoring CodecPack's $filename"
       mv -T -f "$filename" "${filename::-5}"
+    done
+  fi
+
+  if [[ "${gstreamer_platforms[*]}" =~ $cpu_platform ]]; then
+    for plugin in "${gstreamer_plugins[@]}"; do
+      info "Removing gstreamer's $plugin plugin"
+      rm -f "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
     done
   fi
 

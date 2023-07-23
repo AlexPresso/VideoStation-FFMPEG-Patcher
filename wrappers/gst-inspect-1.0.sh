@@ -5,7 +5,7 @@
 #########################
 
 pid=$$
-stderrfile="/tmp/gstlaunch-$pid.stderr"
+stderrfile="/tmp/gstinspect-$pid.stderr"
 logfile="/tmp/gstreamer.log"
 
 #########################
@@ -45,7 +45,7 @@ trap endprocess SIGTERM
 trap handle_error ERR
 
 newline
-info "========================================[start gst $pid]"
+info "========================================[start gst-inspect $pid]"
 info "GST_ARGS: $*"
 
-/var/packages/CodecPack/target/pack/bin/gst-inspect-1.0.orig "$@" 2> $stderrfile
+/var/packages/VideoStation/target/bin/gst-inspect-1.0.orig "$@" 2> $stderrfile
