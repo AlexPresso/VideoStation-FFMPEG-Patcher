@@ -36,6 +36,11 @@ gstreamer_platforms=(
 gstreamer_plugins=(
   "libgstdtsdec"
 )
+gstreamer_libs=(
+  "libdca.so.0"
+  "liborc-0.4.so.0"
+  "liborc-test-0.4.so.0"
+)
 
 ###############################
 # UTILS
@@ -135,8 +140,15 @@ function patch() {
     for plugin in "${gstreamer_plugins[@]}"; do
       info "Downloading $plugin to gstreamer directory..."
 
-      wget -q -O - "$repo_base_url/blob/$branch/lib/$plugin.so?raw=true" \
+      wget -q -O - "$repo_base_url/blob/$branch/plugins/$plugin.so?raw=true" \
         > "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+    done
+
+    for lib in "${gstreamer_libs[@]}"; do
+      info "Downloading $lib to gstreamer directory..."
+
+      wget -q -O - "$repo_base_url/blob/$branch/libs/$lib.so?raw=true" \
+        > "$vs_path/lib/gstreamer/$lib.so"
     done
   fi
 
@@ -178,6 +190,11 @@ function unpatch() {
     for plugin in "${gstreamer_plugins[@]}"; do
       info "Removing gstreamer's $plugin plugin"
       rm -f "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+    done
+
+    for lib in "${gstreamer_libs[@]}"; do
+      info "Removing gstreamer's $lib library"
+      rm -f "$vs_path/lib/gstreamer/$lib.so"
     done
   fi
 
