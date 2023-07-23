@@ -35,10 +35,50 @@ gstreamer_platforms=(
 )
 gstreamer_plugins=(
   "libgstdtsdec"
+  "libgstlibav"
 )
 gstreamer_libs=(
+  "libavcodec-ffmpeg.so.56"
+  "libavformat-ffmpeg.so.56"
+  "libavutil-ffmpeg.so.54"
+  "libbluray.so.1"
   "libdca.so.0"
+  "libgme.so.0"
+  "libgnutls-deb0.so.28"
+  "libgsm.so.1"
+  "libhogweed.so.4"
+  "libmodplug.so.1"
+  "libnettle.so.6"
+  "libnuma.so.1"
+  "libopenjpeg.so.5"
+  "libopenjpeg_JPWL.so.5"
+  "libopus.so.0"
   "liborc-0.4.so.0"
+  "libp11-kit.so.0"
+  "libpng12.so.0"
+  "librtmp.so.1"
+  "libschroedinger-1.0.so.0"
+  "libshine.so.3"
+  "libsoxr.so.0"
+  "libspeex.so.1"
+  "libssh-gcrypt.so.4"
+  "libssh-gcrypt_threads.so.4"
+  "libswresample-ffmpeg.so.1"
+  "libtasn1.so.6"
+  "libtheora.so.0"
+  "libtheoradec.so.1"
+  "libtheoraenc.so.1"
+  "libtwolame.so.0"
+  "libva.so.1"
+  "libvpx.so.2"
+  "libvpx.so.2.0"
+  "libwavpack.so.1"
+  "libwebp.so.5"
+  "libx264.so.146"
+  "libx265.so.59"
+  "libxvidcore.so.4"
+  "libzvbi.so.0"
+  "libzvbi-chains.so.0"
 )
 
 ###############################
@@ -76,9 +116,15 @@ function welcome_motd() {
 
 function restart_packages() {
   if [[ -d $cp_bin_path ]]; then
+    info "Clearing CodecPack gstreamer cache..."
+    rm -f "$cp_path/etc/gstreamer-1.0/registry.*.bin"
+
     info "Restarting CodecPack..."
     synopkg restart CodecPack
   fi
+
+  info "Clearing VideoStation gstreamer cache..."
+  rm -f "$vs_path/etc/gstreamer-1.0/registry.*.bin"
 
   info "Restarting VideoStation..."
   synopkg restart VideoStation
