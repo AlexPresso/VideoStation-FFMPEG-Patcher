@@ -17,9 +17,11 @@ wrappers=(
   "gst-inspect-1.0"
 )
 
-vs_path=/var/packages/VideoStation/target
+vs_base_path=/var/packages/VideoStation
+vs_path="$vs_base_path/target"
 libsynovte_path="$vs_path/lib/libsynovte.so"
-cp_path=/var/packages/CodecPack/target/pack
+cp_base_path=/var/packages/CodecPack
+cp_path="$cp_base_path/target/pack"
 cp_bin_path="$cp_path/bin"
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
@@ -29,9 +31,6 @@ cp_to_patch=(
   "gst-inspect-1.0:gst-inspect-1.0"
 )
 
-gstreamer_platforms=(
-  "REALTEK_RTD1296"
-)
 gstreamer_plugins=(
   "libgstdtsdec"
   "libgstlibav"
@@ -118,15 +117,19 @@ function welcome_motd() {
 
 function restart_packages() {
   if [[ -d $cp_bin_path ]]; then
-    info "Clearing CodecPack gstreamer cache..."
-    rm -f "$cp_path/etc/gstreamer-1.0/registry.*.bin"
+    if [[ -d "$cp_base_path/etc/gstreamer-1.0" ]]; then
+      info "Clearing CodecPack gstreamer cache..."
+      rm -f "$cp_base_path/etc/gstreamer-1.0/registry.*.bin"
+    fi
 
     info "Restarting CodecPack..."
     synopkg restart CodecPack
   fi
 
-  info "Clearing VideoStation gstreamer cache..."
-  rm -f "$vs_path/etc/gstreamer-1.0/registry.*.bin"
+  if [[ -d "$vs_base_path/etc/gstreamer-1.0" ]]; then
+    info "Clearing VideoStation gstreamer cache..."
+    rm -f "$vs_base_path/etc/gstreamer-1.0/registry.*.bin"
+  fi
 
   info "Restarting VideoStation..."
   synopkg restart VideoStation
