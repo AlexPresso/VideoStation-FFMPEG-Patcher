@@ -50,5 +50,7 @@ info "GST_ARGS: $*"
 
 /var/packages/VideoStation/target/bin/gst-inspect-1.0.orig "$@" 2> $stderrfile &
 
-wait $!
-info "========================================[end gst-inspect $pid]"
+child=$!
+wait $child
+
+endprocess

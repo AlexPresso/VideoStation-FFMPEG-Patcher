@@ -50,5 +50,7 @@ info "GST_ARGS: $*"
 
 /var/packages/VideoStation/target/bin/gst-launch-1.0.orig "$@" 2> $stderrfile &
 
-wait $!
-info "========================================[end gst-launch $pid]"
+child=$!
+wait $child
+
+endprocess

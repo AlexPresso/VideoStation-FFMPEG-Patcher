@@ -52,5 +52,7 @@ info "DEFAULT_ARGS: $*"
 
 /var/packages/@ffmpeg_version@/target/bin/ffmpeg "$@" <&0 2> $stderrfile &
 
-wait $!
-info "========================================[end ffmpeg $pid]"
+child=$!
+wait $child
+
+endprocess
