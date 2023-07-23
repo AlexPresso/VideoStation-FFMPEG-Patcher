@@ -5,7 +5,6 @@
 ###############################
 
 source "/etc/VERSION"
-cpu_platform=$(</proc/syno_platform)
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
