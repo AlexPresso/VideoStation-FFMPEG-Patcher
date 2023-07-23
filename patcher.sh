@@ -182,7 +182,7 @@ function patch() {
     done
   fi
 
-  if [[ "${gstreamer_platforms[*]}" =~ $cpu_platform ]]; then
+  if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
     info "Downloading gstreamer plugins..."
 
     for plugin in "${gstreamer_plugins[@]}"; do
@@ -244,7 +244,7 @@ function unpatch() {
     done
   fi
 
-  if [[ "${gstreamer_platforms[*]}" =~ $cpu_platform ]]; then
+  if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
     for plugin in "${gstreamer_plugins[@]}"; do
       info "Removing gstreamer's $plugin plugin"
       rm -f "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
