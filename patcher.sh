@@ -5,6 +5,7 @@
 ###############################
 
 source "/etc/VERSION"
+cpu_platform=$(</proc/syno_platform)
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
@@ -15,12 +16,17 @@ wrappers=("ffmpeg" "gst-launch-1.0")
 
 vs_path=/var/packages/VideoStation/target
 libsynovte_path="$vs_path/lib/libsynovte.so"
-cp_bin_path=/var/packages/CodecPack/target/bin
+cp_path=/var/packages/CodecPack/target
+cp_bin_path="$cp_path/bin"
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
   "ffmpeg27:ffmpeg"
   "ffmpeg33:ffmpeg"
   "gst-launch-1.0:gst-launch-1.0"
+  "gst-inspect-1.0:gst-inspect-1.0"
+)
+gstreamer_platforms=(
+  "REALTEK_RTD1296"
 )
 
 ###############################
@@ -94,7 +100,7 @@ function patch() {
       mv -n "$vs_path/bin/$filename" "$vs_path/bin/$filename.orig"
 
       info "Downloading and installing $filename's wrapper..."
-      wget -q -O - "$repo_base_url/blob/$branch/$filename-wrapper.sh?raw=true" > "$vs_path/bin/$filename"
+      wget -q -O - "$repo_base_url/blob/$branch/wrappers/$filename.sh?raw=true" > "$vs_path/bin/$filename"
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
@@ -113,6 +119,19 @@ function patch() {
         ln -s -f "$vs_path/bin/$target" "$cp_bin_path/$filename"
       fi
     done
+  fi
+
+  if [[ "${gstreamer_platforms[*]}" =~ $cpu_platform ]]; then
+    info "Downloading gstreamer plugins..."
+
+    wget -q -O - http://launchpadlibrarian.net/220569823/gstreamer1.0-plugins-bad_1.6.0-1ubuntu1_arm64.deb \
+      > "/tmp/gst-plugins-bad.deb"
+
+    7z -o "/tmp/gst-plugins-bad" x "/tmp/gst-plugins-bad.deb"
+    tar -xf "/tmp/gst-plugins-bad/data.tar" -C "/tmp/gst-plugins-bad"
+
+    info "Copying plugins to gstreamer directory..."
+    cp "/tmp/gst-plugins-bad/usr/lib/aarch64-linux-gnu/gstreamer-1.0/*.so" "$cp_path/pack/lib/gstreamer/gstreamer-1.0"
   fi
 
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
