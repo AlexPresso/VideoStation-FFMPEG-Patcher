@@ -17,7 +17,7 @@ wrappers=("ffmpeg" "gst-launch-1.0")
 vs_path=/var/packages/VideoStation/target
 libsynovte_path="$vs_path/lib/libsynovte.so"
 cp_path=/var/packages/CodecPack/target
-cp_bin_path="$cp_path/bin"
+cp_bin_path="$cp_path/pack/bin"
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
   "ffmpeg27:ffmpeg"
