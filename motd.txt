@@ -1,5 +1,3 @@
-The patcher was redesigned to include an unpatch procedure.
-
-I'm aware of an issue with HEVC and I'm working on it.
+The patcher now supports every scenarios including gstreamer (credits to @nap-liu).
 
 As always, please let me know of any issue you could have.
