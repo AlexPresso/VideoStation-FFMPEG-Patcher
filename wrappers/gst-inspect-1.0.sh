@@ -5,8 +5,10 @@
 #########################
 
 pid=$$
+child=""
 stderrfile="/tmp/gstinspect-$pid.stderr"
 logfile="/tmp/gstreamer.log"
+errcode=0
 
 #########################
 # UTILS
@@ -27,6 +29,7 @@ function handle_error() {
   newline
   cat "$stderrfile" >> $logfile
   newline
+  errcode=1
   endprocess
 }
 
@@ -34,7 +37,12 @@ function endprocess() {
   info "========================================[end gst $pid]"
   newline
   rm "$stderrfile"
-  exit 1
+
+  if [[ "$child" != "" ]]; then
+    kill -9 "$child"
+  fi
+
+  exit $errcode
 }
 
 #########################

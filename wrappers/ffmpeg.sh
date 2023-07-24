@@ -5,6 +5,7 @@
 #########################
 
 pid=$$
+child=""
 stderrfile="/tmp/ffmpeg-$pid.stderr"
 logfile="/tmp/ffmpeg.log"
 errcode=0
@@ -36,6 +37,11 @@ function endprocess() {
   info "========================================[end ffmpeg $pid]"
   newline
   rm -f "$stderrfile"
+
+  if [[ "$child" != "" ]]; then
+    kill -9 "$child"
+  fi
+
   exit $errcode
 }
 

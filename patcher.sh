@@ -5,7 +5,6 @@
 ###############################
 
 source "/etc/VERSION"
-cpu_platform=$(</proc/syno_platform)
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
@@ -18,9 +17,11 @@ wrappers=(
   "gst-inspect-1.0"
 )
 
-vs_path=/var/packages/VideoStation/target
+vs_base_path=/var/packages/VideoStation
+vs_path="$vs_base_path/target"
 libsynovte_path="$vs_path/lib/libsynovte.so"
-cp_path=/var/packages/CodecPack/target/pack
+cp_base_path=/var/packages/CodecPack
+cp_path="$cp_base_path/target/pack"
 cp_bin_path="$cp_path/bin"
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
@@ -30,9 +31,6 @@ cp_to_patch=(
   "gst-inspect-1.0:gst-inspect-1.0"
 )
 
-gstreamer_platforms=(
-  "REALTEK_RTD1296"
-)
 gstreamer_plugins=(
   "libgstdtsdec"
   "libgstlibav"
@@ -119,15 +117,19 @@ function welcome_motd() {
 
 function restart_packages() {
   if [[ -d $cp_bin_path ]]; then
-    info "Clearing CodecPack gstreamer cache..."
-    rm -f "$cp_path/etc/gstreamer-1.0/registry.*.bin"
+    if [[ -d "$cp_base_path/etc/gstreamer-1.0" ]]; then
+      info "Clearing CodecPack gstreamer cache..."
+      rm -f "$cp_base_path/etc/gstreamer-1.0/registry.*.bin"
+    fi
 
     info "Restarting CodecPack..."
     synopkg restart CodecPack
   fi
 
-  info "Clearing VideoStation gstreamer cache..."
-  rm -f "$vs_path/etc/gstreamer-1.0/registry.*.bin"
+  if [[ -d "$vs_base_path/etc/gstreamer-1.0" ]]; then
+    info "Clearing VideoStation gstreamer cache..."
+    rm -f "$vs_base_path/etc/gstreamer-1.0/registry.*.bin"
+  fi
 
   info "Restarting VideoStation..."
   synopkg restart VideoStation
@@ -178,11 +180,12 @@ function patch() {
 
         mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
         ln -s -f "$vs_path/bin/$target" "$cp_bin_path/$filename"
+        ln -s -f "$vs_path/bin/$target" "$cp_base_path/target/bin/$filename"
       fi
     done
   fi
 
-  if [[ "${gstreamer_platforms[*]}" =~ $cpu_platform ]]; then
+  if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
     info "Downloading gstreamer plugins..."
 
     for plugin in "${gstreamer_plugins[@]}"; do
@@ -238,13 +241,16 @@ function unpatch() {
   done
 
   if [[ -d $cp_bin_path ]]; then
-    find $cp_bin_path -type f -name "*.orig" | while read -r filename; do
+    for file in "${cp_to_patch[@]}"; do
+      filename="${file%%:*}"
+
       info "Restoring CodecPack's $filename"
-      mv -T -f "$filename" "${filename::-5}"
+      mv -T -f "$cp_bin_path/$filename.orig" "$cp_bin_path/$filename"
+      ln -s -f "../pack/bin/$filename" "$cp_base_path/target/bin/$filename"
     done
   fi
 
-  if [[ "${gstreamer_platforms[*]}" =~ $cpu_platform ]]; then
+  if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
     for plugin in "${gstreamer_plugins[@]}"; do
       info "Removing gstreamer's $plugin plugin"
       rm -f "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
