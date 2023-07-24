@@ -180,6 +180,7 @@ function patch() {
 
         mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
         ln -s -f "$vs_path/bin/$target" "$cp_bin_path/$filename"
+        ln -s -f "$vs_path/bin/$target" "$cp_base_path/target/bin/$filename"
       fi
     done
   fi
@@ -240,9 +241,12 @@ function unpatch() {
   done
 
   if [[ -d $cp_bin_path ]]; then
-    find $cp_bin_path -type f -name "*.orig" | while read -r filename; do
+    for file in "${cp_to_patch[@]}"; do
+      filename="${file%%:*}"
+
       info "Restoring CodecPack's $filename"
-      mv -T -f "$filename" "${filename::-5}"
+      mv -T -f "$cp_bin_path/$filename.orig" "$cp_bin_path/$filename"
+      ln -s -f "../pack/bin/$filename" "$cp_base_path/target/bin/$filename"
     done
   fi
 
