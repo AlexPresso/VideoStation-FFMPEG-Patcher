@@ -21,8 +21,9 @@ vs_base_path=/var/packages/VideoStation
 vs_path="$vs_base_path/target"
 libsynovte_path="$vs_path/lib/libsynovte.so"
 cp_base_path=/var/packages/CodecPack
-cp_path="$cp_base_path/target/pack"
+cp_path="$cp_base_path/target"
 cp_bin_path="$cp_path/bin"
+cp_pack_path=false
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
   "ffmpeg27:ffmpeg"
@@ -244,9 +245,14 @@ function unpatch() {
     for file in "${cp_to_patch[@]}"; do
       filename="${file%%:*}"
 
-      info "Restoring CodecPack's $filename"
-      mv -T -f "$cp_bin_path/$filename.orig" "$cp_bin_path/$filename"
-      ln -s -f "../pack/bin/$filename" "$cp_base_path/target/bin/$filename"
+      if [[ -f  "$cp_bin_path/$filename.orig" ]]; then
+        info "Restoring CodecPack's $filename"
+        mv -T -f "$cp_bin_path/$filename.orig" "$cp_bin_path/$filename"
+
+        if [[ $cp_pack_path ]]; then
+          ln -s -f "../pack/bin/$filename" "$cp_base_path/target/bin/$filename"
+        fi
+      fi
     done
   fi
 
@@ -297,7 +303,9 @@ welcome_motd
 
 info "You're running DSM $dsm_version"
 if [[ -d /var/packages/CodecPack/target/pack ]]; then
-  cp_bin_path=/var/packages/CodecPack/target/pack/bin
+  cp_path="$cp_base_path/target/pack"
+  cp_bin_path="$cp_path/bin"
+  cp_pack_path=true
   info "Tuned script for DSM $dsm_version"
 fi
 
