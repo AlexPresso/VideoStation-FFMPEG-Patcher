@@ -6,7 +6,7 @@
 
 source "/etc/VERSION"
 dsm_version="$productversion $buildnumber-$smallfixnumber"
-repo_base_url="https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher"
+repo_base_url="https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher"
 version="2.0"
 action="patch"
 branch="main"
@@ -107,7 +107,7 @@ function root_check() {
 function welcome_motd() {
   info "ffmpeg-patcher v$version"
 
-  motd=$(curl -s -L "$repo_base_url/blob/$branch/motd.txt?raw=true")
+  motd=$(curl -s -L "$repo_base_url/$branch/motd.txt")
   if [ "${#motd}" -ge 1 ]; then
     log "Message of the day"
     echo ""
@@ -164,7 +164,7 @@ function patch() {
       mv -n "$vs_path/bin/$filename" "$vs_path/bin/$filename.orig"
 
       info "Downloading and installing $filename's wrapper..."
-      wget -q -O - "$repo_base_url/blob/$branch/wrappers/$filename.sh?raw=true" > "$vs_path/bin/$filename"
+      wget -q -O - "$repo_base_url/$branch/wrappers/$filename.sh" > "$vs_path/bin/$filename"
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
@@ -192,7 +192,7 @@ function patch() {
     for plugin in "${gstreamer_plugins[@]}"; do
       info "Downloading $plugin to gstreamer directory..."
 
-      wget -q -O - "$repo_base_url/raw/$branch/plugins/$plugin.so" \
+      wget -q -O - "$repo_base_url/$branch/plugins/$plugin.so" \
         > "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
     done
 
@@ -203,7 +203,7 @@ function patch() {
     for lib in "${gstreamer_libs[@]}"; do
       info "Downloading $lib to gstreamer directory..."
 
-      wget -q -O - "$repo_base_url/raw/$branch/libs/$lib" \
+      wget -q -O - "$repo_base_url/$branch/libs/$lib" \
         > "$vs_path/lib/gstreamer/$lib"
     done
 
