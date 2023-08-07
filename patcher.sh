@@ -107,13 +107,12 @@ function root_check() {
 function welcome_motd() {
   info "ffmpeg-patcher v$version"
 
-  motd=$(curl -s -L "$repo_base_url/$branch/motd.txt")
-  if [ "${#motd}" -ge 1 ]; then
-    log "Message of the day"
-    echo ""
-    echo "$motd"
-    echo ""
-  fi
+  download "$repo_base_url/$branch/motd.txt" /tmp/tmp.wget
+
+  log "Message of the day"
+  echo ""
+  cat /tmp/tmp.wget
+  echo ""
 }
 
 function restart_packages() {
@@ -151,6 +150,22 @@ function check_dependencies() {
   fi
 }
 
+function download() {
+  wget -q -O - "$1" > /tmp/temp.wget
+  downloadStatus=$?
+
+  if [[ $downloadStatus == 0 ]]; then
+    mv -f /tmp/temp.wget "$2"
+  else
+    error "An error occurred while downloading $1. Rolling back changes..."
+    unpatch
+
+    error "An error occurred while downloading $1, every changes were rolled back."
+    error "Please check your internet connection / GithubStatus. If you think this is an error, please file an issue to the repository."
+    exit 1
+  fi
+}
+
 ################################
 # PATCH PROCEDURES
 ################################
@@ -164,7 +179,7 @@ function patch() {
       mv -n "$vs_path/bin/$filename" "$vs_path/bin/$filename.orig"
 
       info "Downloading and installing $filename's wrapper..."
-      wget -q -O - "$repo_base_url/$branch/wrappers/$filename.sh" > "$vs_path/bin/$filename"
+      download "$repo_base_url/$branch/wrappers/$filename.sh" "$vs_path/bin/$filename"
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
@@ -191,9 +206,7 @@ function patch() {
 
     for plugin in "${gstreamer_plugins[@]}"; do
       info "Downloading $plugin to gstreamer directory..."
-
-      wget -q -O - "$repo_base_url/$branch/plugins/$plugin.so" \
-        > "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+      download "$repo_base_url/$branch/plugins/$plugin.so" "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
     done
 
     mkdir -p "$vs_path/lib/gstreamer/dri"
@@ -202,9 +215,7 @@ function patch() {
 
     for lib in "${gstreamer_libs[@]}"; do
       info "Downloading $lib to gstreamer directory..."
-
-      wget -q -O - "$repo_base_url/$branch/libs/$lib" \
-        > "$vs_path/lib/gstreamer/$lib"
+      download "$repo_base_url/$branch/libs/$lib" "$vs_path/lib/gstreamer/$lib"
     done
 
     info "Saving current GSTOmx configuration..."
