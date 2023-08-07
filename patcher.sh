@@ -157,7 +157,7 @@ function download() {
   if [[ $downloadStatus == 0 ]]; then
     mv -f /tmp/temp.wget "$2"
   else
-    error "An error occurred while downloading $1. Rollbacking changes..."
+    error "An error occurred while downloading $1. Rolling back changes..."
     unpatch
 
     error "An error occurred while downloading $1, every changes were rolled back."
