@@ -135,6 +135,16 @@ function restart_packages() {
   synopkg restart VideoStation
 }
 
+function clean() {
+  info "Cleaning orphan files..."
+
+  rm -f /tmp/tmp.wget
+  rm -f /tmp/ffmpeg.log
+  rm -f /tmp/ffmpeg*.stderr
+  rm -f /tmp/gstreamer.log
+  rm -f /tmp/gst*.stderr
+}
+
 function check_dependencies() {
   missingDeps=false
 
@@ -172,6 +182,11 @@ function download() {
 
 function patch() {
   info "====== Patching procedure (branch: $branch) ======"
+
+  if [[ -f "$vs_path/lib/libsynovte.so.orig" ]]; then
+    error "You're trying to patch over an already patched VideoStation, if that's really what you want to do, please unpatch before patching again."
+    exit 1
+  fi
 
   for filename in "${wrappers[@]}"; do
     if [[ -f "$vs_path/bin/$filename" ]]; then
@@ -236,6 +251,7 @@ function patch() {
   sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
 
   restart_packages
+  clean
 
   echo ""
   info "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
@@ -283,6 +299,7 @@ function unpatch() {
   fi
 
   restart_packages
+  clean
 
   echo ""
   info "unpatch complete"
