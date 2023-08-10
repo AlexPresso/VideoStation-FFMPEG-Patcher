@@ -24,6 +24,8 @@ function root_check() {
 # ENTRYPOINT
 ################################
 
+root_check
+
 echo "
 ================ ISSUE REPORT TOOL ================
 
