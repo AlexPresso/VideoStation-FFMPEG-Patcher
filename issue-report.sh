@@ -54,6 +54,6 @@ echo "Gstreamer last stderr logs........................."
 tail -22 /tmp/gstreamer*.stderr
 
 echo ""
-echo "FFMPEG stderr logs............................"
+echo "FFMPEG last stderr logs............................"
 tail -22 /tmp/ffmpeg*.stderr
 
