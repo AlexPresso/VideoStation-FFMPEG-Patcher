@@ -211,7 +211,6 @@ function patch() {
 
         mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
         ln -s -f "$vs_path/bin/$target" "$cp_bin_path/$filename"
-        ln -s -f "$vs_path/bin/$target" "$cp_base_path/target/bin/$filename"
       fi
     done
   fi
@@ -275,10 +274,6 @@ function unpatch() {
       if [[ -f  "$cp_bin_path/$filename.orig" ]]; then
         info "Restoring CodecPack's $filename"
         mv -T -f "$cp_bin_path/$filename.orig" "$cp_bin_path/$filename"
-
-        if [[ $cp_pack_path ]]; then
-          ln -s -f "../pack/bin/$filename" "$cp_base_path/target/bin/$filename"
-        fi
       fi
     done
   fi
