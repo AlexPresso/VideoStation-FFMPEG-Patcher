@@ -196,6 +196,7 @@ function patch() {
 
       info "Downloading $filename script..."
       download "$repo_base_url/$branch/scripts/$filename.sh" "$vs_base_path/scripts/$filename"
+      chmod 755 "$vs_base_path/scripts/$filename"
     fi
   done
 
