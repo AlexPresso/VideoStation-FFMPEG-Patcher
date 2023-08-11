@@ -23,7 +23,7 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 ## Instructions
 - Check that you meet the required [dependencies](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#dependencies)
 - Install SynoCommunity ffmpeg ([help](https://synocommunity.com/#easy-install))
-- If you plan to play HEVC / AAC videos, install Advanced Media Extensions (and configure the license)
+- If you plan to play HEVC / AAC videos, install Advanced Media Extensions and license it using your Synology account inside the app
 - Connect to your NAS using SSH (admin user required) ([help](https://www.synology.com/en-global/knowledgebase/DSM/tutorial/General_Setup/How_to_login_to_DSM_with_root_permission_via_SSH_Telnet))
 - Use the command `sudo -i` to switch to root user
 - Use the [following](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage) command (Basic command) to execute the patch
