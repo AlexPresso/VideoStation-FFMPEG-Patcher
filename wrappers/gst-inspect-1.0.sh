@@ -46,7 +46,7 @@ function endprocess() {
 # ENTRYPOINT
 #########################
 
-trap endprocess SIGTERM
+trap endprocess SIGINT SIGTERM
 trap handle_error ERR
 
 newline

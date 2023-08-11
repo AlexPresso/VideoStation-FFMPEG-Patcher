@@ -304,7 +304,6 @@ function unpatch() {
 # ENTRYPOINT
 ################################
 root_check
-check_dependencies
 
 while getopts a:b:p:v: flag; do
   case "${flag}" in
