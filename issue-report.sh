@@ -4,6 +4,7 @@
 # VARS
 ###############################
 
+# shellcheck source=/dev/null
 source "/etc/VERSION"
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 vs_path=/var/packages/VideoStation

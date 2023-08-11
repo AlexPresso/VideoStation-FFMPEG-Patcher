@@ -25,7 +25,6 @@ vs_scripts=("preuninst")
 cp_base_path=/var/packages/CodecPack
 cp_path="$cp_base_path/target"
 cp_bin_path="$cp_path/bin"
-cp_pack_path=false
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
   "ffmpeg27:ffmpeg"
@@ -345,7 +344,6 @@ info "You're running DSM $dsm_version"
 if [[ -d /var/packages/CodecPack/target/pack ]]; then
   cp_path="$cp_base_path/target/pack"
   cp_bin_path="$cp_path/bin"
-  cp_pack_path=true
   info "Tuned script for DSM $dsm_version"
 fi
 
