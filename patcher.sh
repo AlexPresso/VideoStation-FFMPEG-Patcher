@@ -4,7 +4,7 @@
 # VARS
 ###############################
 
-# shellcheck source=/dev/null
+# shellcheck source=/.github/workflows/mock/VERSION
 source "/etc/VERSION"
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher"
