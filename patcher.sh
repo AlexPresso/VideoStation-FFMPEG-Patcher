@@ -317,7 +317,7 @@ function unpatch() {
       rm -f "$vs_path/lib/gstreamer/$lib"
     done
 
-    if [[ -f "$vs_patch/etc/gstomx.conf.orig" ]]; then
+    if [[ -f "$vs_path/etc/gstomx.conf.orig" ]]; then
       info "Restoring GSTOmx configuration..."
       mv -T -f "$vs_path/etc/gstomx.conf.orig" "$vs_path/etc/gstomx.conf"
     else
