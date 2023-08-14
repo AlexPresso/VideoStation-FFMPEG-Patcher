@@ -201,7 +201,7 @@ function patch() {
 
       info "Injecting script variables..."
       repo_full_url="$repo_base_url/$branch"
-      sed -i -e "s/@repo_full_url@/$repo_full_url/" "$vs_base_path/scripts/$filename"
+      sed -i -e "s|@repo_full_url@|$repo_full_url|" "$vs_base_path/scripts/$filename"
 
       chmod 755 "$vs_base_path/scripts/$filename"
     fi
