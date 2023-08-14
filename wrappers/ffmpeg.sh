@@ -13,30 +13,32 @@ errcode=0
 # UTILS
 #########################
 
-function log() {
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> $stderrfile
+log() {
+  local now
+  now=$(date '+%Y-%m-%d %H:%M:%S')
+  echo "[$now] [$1] $2" >> $stderrfile
 }
-function newline() {
+newline() {
   echo "" >> $stderrfile
 }
-function info() {
+info() {
   log "INFO" "$1"
 }
 
-function handle_error() {
+handle_error() {
   log "ERROR" "An error occurred"
   newline
   errcode=1
   endprocess
 }
 
-function endprocess() {
+endprocess() {
   info "========================================[end ffmpeg $pid]"
   newline
   rm -f "$stderrfile"
 
   if [[ "$child" != "" ]]; then
-    kill -9 "$child"
+    kill "$child"
   fi
 
   exit $errcode
@@ -51,11 +53,11 @@ trap handle_error ERR
 
 newline
 info "========================================[start ffmpeg $pid]"
-info "DEFAULT_ARGS: $*"
+info "DEFAULT ARGS: $*"
 
-/var/packages/@ffmpeg_version@/target/bin/ffmpeg "$@" <&0 2> $stderrfile &
+/var/packages/@ffmpeg_version@/target/bin/ffmpeg "$@" <&0 2>> $stderrfile &
 
 child=$!
-wait $child
+wait "$child"
 
 endprocess
