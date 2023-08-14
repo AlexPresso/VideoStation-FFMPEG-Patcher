@@ -278,8 +278,12 @@ function patch() {
 function unpatch() {
   info "====== Unpatch procedure ======"
 
-  info "Restoring libsynovte.so"
-  mv -T -f "$libsynovte_path.orig" "$libsynovte_path"
+  if [[ -f "$libsynovte_path.orig" ]]; then
+    info "Restoring libsynovte.so"
+    mv -T -f "$libsynovte_path.orig" "$libsynovte_path"
+  else
+    info "libsynovte.so was not patched, keeping actual file."
+  fi
 
   find "$vs_path/bin" -type f -name "*.orig" | while read -r filename; do
     info "Restoring VideoStation's $filename"
@@ -313,8 +317,12 @@ function unpatch() {
       rm -f "$vs_path/lib/gstreamer/$lib"
     done
 
-    info "Restoring GSTOmx configuration..."
-    mv -T -f "$vs_path/etc/gstomx.conf.orig" "$vs_path/etc/gstomx.conf"
+    if [[ -f "$vs_patch/etc/gstomx.conf.orig" ]]; then
+      info "Restoring GSTOmx configuration..."
+      mv -T -f "$vs_path/etc/gstomx.conf.orig" "$vs_path/etc/gstomx.conf"
+    else
+      info "GSTOmx configuration was not patched, keeping actual file."
+    fi
   fi
 
   restart_packages
