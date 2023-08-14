@@ -4,6 +4,7 @@
 # VARS
 ###############################
 
+# shellcheck source=/.github/workflows/mock/VERSION
 source "/etc/VERSION"
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher"
@@ -20,10 +21,10 @@ wrappers=(
 vs_base_path=/var/packages/VideoStation
 vs_path="$vs_base_path/target"
 libsynovte_path="$vs_path/lib/libsynovte.so"
+vs_scripts=("preuninst")
 cp_base_path=/var/packages/CodecPack
 cp_path="$cp_base_path/target"
 cp_bin_path="$cp_path/bin"
-cp_pack_path=false
 cp_to_patch=(
   "ffmpeg41:ffmpeg"
   "ffmpeg27:ffmpeg"
@@ -135,6 +136,16 @@ function restart_packages() {
   synopkg restart VideoStation
 }
 
+function clean() {
+  info "Cleaning orphan files..."
+
+  rm -f /tmp/tmp.wget
+  rm -f /tmp/ffmpeg.log
+  rm -f /tmp/ffmpeg*.stderr
+  rm -f /tmp/gstreamer.log
+  rm -f /tmp/gst*.stderr
+}
+
 function check_dependencies() {
   missingDeps=false
 
@@ -171,7 +182,30 @@ function download() {
 ################################
 
 function patch() {
+  check_dependencies
+
   info "====== Patching procedure (branch: $branch) ======"
+
+  if [[ -f "$vs_path/lib/libsynovte.so.orig" ]]; then
+    error "You're trying to patch over an already patched VideoStation, if that's really what you want to do, please unpatch before patching again."
+    exit 1
+  fi
+
+  for filename in "${vs_scripts[@]}"; do
+    if [[ -f "$vs_base_path/scripts/$filename" ]]; then
+      info "Saving current $filename script as $filename.orig"
+      mv -n "$vs_base_path/scripts/$filename" "$vs_base_path/scripts/$filename.orig"
+
+      info "Downloading $filename script..."
+      download "$repo_base_url/$branch/scripts/$filename.sh" "$vs_base_path/scripts/$filename"
+
+      info "Injecting script variables..."
+      repo_full_url="$repo_base_url/$branch"
+      sed -i -e "s|@repo_full_url@|$repo_full_url|" "$vs_base_path/scripts/$filename"
+
+      chmod 755 "$vs_base_path/scripts/$filename"
+    fi
+  done
 
   for filename in "${wrappers[@]}"; do
     if [[ -f "$vs_path/bin/$filename" ]]; then
@@ -196,7 +230,6 @@ function patch() {
 
         mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
         ln -s -f "$vs_path/bin/$target" "$cp_bin_path/$filename"
-        ln -s -f "$vs_path/bin/$target" "$cp_base_path/target/bin/$filename"
       fi
     done
   fi
@@ -236,6 +269,7 @@ function patch() {
   sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
 
   restart_packages
+  clean
 
   echo ""
   info "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
@@ -244,11 +278,20 @@ function patch() {
 function unpatch() {
   info "====== Unpatch procedure ======"
 
-  info "Restoring libsynovte.so"
-  mv -T -f "$libsynovte_path.orig" "$libsynovte_path"
+  if [[ -f "$libsynovte_path.orig" ]]; then
+    info "Restoring libsynovte.so"
+    mv -T -f "$libsynovte_path.orig" "$libsynovte_path"
+  else
+    info "libsynovte.so was not patched, keeping actual file."
+  fi
 
   find "$vs_path/bin" -type f -name "*.orig" | while read -r filename; do
     info "Restoring VideoStation's $filename"
+    mv -T -f "$filename" "${filename::-5}"
+  done
+
+  find "$vs_base_path/scripts" -type f -name "*.orig" | while read -r filename; do
+    info "Restoring VideoStation's $filename script"
     mv -T -f "$filename" "${filename::-5}"
   done
 
@@ -259,10 +302,6 @@ function unpatch() {
       if [[ -f  "$cp_bin_path/$filename.orig" ]]; then
         info "Restoring CodecPack's $filename"
         mv -T -f "$cp_bin_path/$filename.orig" "$cp_bin_path/$filename"
-
-        if [[ $cp_pack_path ]]; then
-          ln -s -f "../pack/bin/$filename" "$cp_base_path/target/bin/$filename"
-        fi
       fi
     done
   fi
@@ -278,11 +317,16 @@ function unpatch() {
       rm -f "$vs_path/lib/gstreamer/$lib"
     done
 
-    info "Restoring GSTOmx configuration..."
-    mv -T -f "$vs_path/etc/gstomx.conf.orig" "$vs_path/etc/gstomx.conf"
+    if [[ -f "$vs_path/etc/gstomx.conf.orig" ]]; then
+      info "Restoring GSTOmx configuration..."
+      mv -T -f "$vs_path/etc/gstomx.conf.orig" "$vs_path/etc/gstomx.conf"
+    else
+      info "GSTOmx configuration was not patched, keeping actual file."
+    fi
   fi
 
   restart_packages
+  clean
 
   echo ""
   info "unpatch complete"
@@ -292,7 +336,6 @@ function unpatch() {
 # ENTRYPOINT
 ################################
 root_check
-check_dependencies
 
 while getopts a:b:p:v: flag; do
   case "${flag}" in
@@ -316,7 +359,6 @@ info "You're running DSM $dsm_version"
 if [[ -d /var/packages/CodecPack/target/pack ]]; then
   cp_path="$cp_base_path/target/pack"
   cp_bin_path="$cp_path/bin"
-  cp_pack_path=true
   info "Tuned script for DSM $dsm_version"
 fi
 

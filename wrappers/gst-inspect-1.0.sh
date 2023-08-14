@@ -7,7 +7,6 @@
 pid=$$
 child=""
 stderrfile="/tmp/gstinspect-$pid.stderr"
-logfile="/tmp/gstreamer.log"
 errcode=0
 
 #########################
@@ -15,19 +14,17 @@ errcode=0
 #########################
 
 function log() {
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> $logfile
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> $stderrfile
 }
 function newline() {
-  echo "" >> $logfile
+  echo "" >> $stderrfile
 }
 function info() {
   log "INFO" "$1"
 }
 
 function handle_error() {
-  log "ERROR" "An error occurred, here is the $stderrfile content: "
-  newline
-  cat "$stderrfile" >> $logfile
+  log "ERROR" "An error occurred"
   newline
   errcode=1
   endprocess
@@ -49,7 +46,7 @@ function endprocess() {
 # ENTRYPOINT
 #########################
 
-trap endprocess SIGTERM
+trap endprocess SIGINT SIGTERM
 trap handle_error ERR
 
 newline
