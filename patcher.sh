@@ -198,6 +198,11 @@ function patch() {
 
       info "Downloading $filename script..."
       download "$repo_base_url/$branch/scripts/$filename.sh" "$vs_base_path/scripts/$filename"
+
+      info "Injecting script variables..."
+      sed -i -e "s/@repo_base_url@/$repo_base_url/" "$vs_base_path/scripts/$filename"
+      sed -i -e "s/@branch@/$branch/" "$vs_base_path/scripts/$filename"
+
       chmod 755 "$vs_base_path/scripts/$filename"
     fi
   done
