@@ -182,6 +182,8 @@ function download() {
 ################################
 
 function patch() {
+  check_dependencies
+
   info "====== Patching procedure (branch: $branch) ======"
 
   if [[ -f "$vs_path/lib/libsynovte.so.orig" ]]; then
