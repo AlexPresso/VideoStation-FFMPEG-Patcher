@@ -1,5 +1,6 @@
-The patcher now supports every scenarios including gstreamer (credits to @nap-liu).
+The patcher now supports every scenario including gstreamer (credits to @nap-liu).
 
-A process leak was identified and fixed, performances should be better when changing video time.
+A new version of the wrapper was deployed (v2.1).
+You can find the changelog here: https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/releases/tag/2.1
 
 As always, please let me know of any issue you could have.

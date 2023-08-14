@@ -13,30 +13,32 @@ errcode=0
 # UTILS
 #########################
 
-function log() {
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> $stderrfile
+log() {
+  local now
+  now=$(date '+%Y-%m-%d %H:%M:%S')
+  echo "[$now] [$1] $2" >> $stderrfile
 }
-function newline() {
+newline() {
   echo "" >> $stderrfile
 }
-function info() {
+info() {
   log "INFO" "$1"
 }
 
-function handle_error() {
+handle_error() {
   log "ERROR" "An error occurred"
   newline
   errcode=1
   endprocess
 }
 
-function endprocess() {
+endprocess() {
   info "========================================[end gst $pid]"
   newline
   rm "$stderrfile"
 
   if [[ "$child" != "" ]]; then
-      kill -9 "$child"
+      kill "$child"
   fi
 
   exit $errcode
@@ -53,9 +55,9 @@ newline
 info "========================================[start gst-launch $pid]"
 info "GST_ARGS: $*"
 
-/var/packages/VideoStation/target/bin/gst-launch-1.0.orig "$@" 2> $stderrfile &
+/var/packages/VideoStation/target/bin/gst-launch-1.0.orig "$@" 2>> $stderrfile &
 
 child=$!
-wait $child
+wait "$child"
 
 endprocess
