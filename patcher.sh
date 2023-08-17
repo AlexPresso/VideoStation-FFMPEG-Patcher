@@ -88,24 +88,24 @@ gstreamer_libs=(
 # UTILS
 ###############################
 
-function log() {
+log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2"
 }
-function info() {
+info() {
   log "INFO" "$1"
 }
-function error() {
+error() {
   log "ERROR" "$1"
 }
 
-function root_check() {
+root_check() {
   if [[ "$EUID" -ne 0 ]]; then
     error "This tool needs root access (please run 'sudo -i' before proceeding)."
     exit 1
   fi
 }
 
-function welcome_motd() {
+welcome_motd() {
   info "ffmpeg-patcher v$version"
 
   download "$repo_base_url/$branch/motd.txt" /tmp/tmp.wget
@@ -116,7 +116,22 @@ function welcome_motd() {
   echo ""
 }
 
-function restart_packages() {
+check_dependencies() {
+  missingDeps=0
+
+  for dependency in "${dependencies[@]}"; do
+    if [[ ! -d "/var/packages/$dependency" ]]; then
+      error "Missing $dependency package, please install it and re-run the patcher."
+      missingDeps=1
+    fi
+  done
+
+  if [[ missingDeps -eq 1 ]]; then
+    exit 1
+  fi
+}
+
+restart_packages() {
   if [[ -d $cp_bin_path ]]; then
     if [[ -d "$cp_base_path/etc/gstreamer-1.0" ]]; then
       info "Clearing CodecPack gstreamer cache..."
@@ -136,7 +151,7 @@ function restart_packages() {
   synopkg restart VideoStation
 }
 
-function clean() {
+clean() {
   info "Cleaning orphan files..."
 
   rm -f /tmp/tmp.wget
@@ -146,22 +161,7 @@ function clean() {
   rm -f /tmp/gst*.stderr
 }
 
-function check_dependencies() {
-  missingDeps=false
-
-  for dependency in "${dependencies[@]}"; do
-    if [[ ! -d "/var/packages/$dependency" ]]; then
-      error "Missing $dependency package, please install it and re-run the patcher."
-      missingDeps=true
-    fi
-  done
-
-  if [[ $missingDeps -eq 1 ]]; then
-    exit 1
-  fi
-}
-
-function download() {
+download() {
   wget -q -O - "$1" > /tmp/temp.wget
   downloadStatus=$?
 
@@ -181,7 +181,7 @@ function download() {
 # PATCH PROCEDURES
 ################################
 
-function patch() {
+patch() {
   check_dependencies
 
   info "====== Patching procedure (branch: $branch) ======"
@@ -275,7 +275,7 @@ function patch() {
   info "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
 }
 
-function unpatch() {
+unpatch() {
   info "====== Unpatch procedure ======"
 
   if [[ -f "$libsynovte_path.orig" ]]; then
