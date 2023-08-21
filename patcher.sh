@@ -157,8 +157,10 @@ clean() {
   rm -f /tmp/tmp.wget
   rm -f /tmp/ffmpeg.log
   rm -f /tmp/ffmpeg*.stderr
+  rm -f /tmp/ffmpeg*.stderr.prev
   rm -f /tmp/gstreamer.log
   rm -f /tmp/gst*.stderr
+  rm -f /tmp/gst*.stderr.prev
 }
 
 download() {
