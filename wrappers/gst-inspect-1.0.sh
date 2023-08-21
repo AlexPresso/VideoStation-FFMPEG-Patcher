@@ -56,7 +56,7 @@ endprocess() {
 trap endprocess SIGINT SIGTERM
 trap handle_error ERR
 
-rm -f "/tmp/gstinspect*.stderr.prev"
+rm -f /tmp/gstinspect*.stderr.prev
 
 newline
 info "========================================[start gst-inspect $pid]"

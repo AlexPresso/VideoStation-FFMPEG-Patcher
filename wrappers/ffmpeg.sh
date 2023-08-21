@@ -36,7 +36,7 @@ endprocess() {
   info "========================================[end ffmpeg $pid]"
   newline
 
-  if [[ $errcode = 1 ]]; then
+  if [[ $errcode -eq 1 ]]; then
     cp "$stderrfile" "$stderrfile.prev"
   fi
 
@@ -56,7 +56,7 @@ endprocess() {
 trap endprocess SIGINT SIGTERM
 trap handle_error ERR
 
-rm -f "/tmp/ffmpeg*.stderr.prev"
+rm -f /tmp/ffmpeg*.stderr.prev
 
 newline
 info "========================================[start ffmpeg $pid]"

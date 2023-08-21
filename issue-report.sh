@@ -60,13 +60,13 @@ echo "GSTInspect last stderr logs........................."
 tail -22 /tmp/gstinspect*.stderr
 echo ""
 echo "GSTInspect last stderr.prev logs........................."
-cat /tmp/gstinspect*.stderr.prev
+tail -22 /tmp/gstinspect*.stderr.prev
 echo ""
 echo "GSTLaunch last stderr logs........................."
 tail -22 /tmp/gstlaunch*.stderr
 echo ""
 echo "GSTLaunch last stderr.prev logs........................."
-cat /tmp/gstlaunch*.stderr.prev
+tail -22 /tmp/gstlaunch*.stderr.prev
 
 echo ""
 echo "FFMPEG head logs..................................."
@@ -76,5 +76,8 @@ echo "FFMPEG last stderr logs............................"
 tail -22 /tmp/ffmpeg*.stderr
 
 echo ""
-echo "FFMPEG prev logs..................................."
-cat /tmp/ffmpeg*.stderr.prev
+echo "FFMPEG prev head logs..................................."
+head /tmp/ffmpeg*.stderr.prev
+echo ""
+echo "FFMPEG prev tail logs..................................."
+tail -22 /tmp/ffmpeg*.stderr.prev

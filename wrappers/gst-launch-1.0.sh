@@ -56,7 +56,7 @@ endprocess() {
 trap endprocess SIGINT SIGTERM
 trap handle_error ERR
 
-rm -f "/tmp/gstlaunch*.stderr.prev"
+rm -f /tmp/gstlaunch*.stderr.prev
 
 newline
 info "========================================[start gst-launch $pid]"
