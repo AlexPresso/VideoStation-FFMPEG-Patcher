@@ -126,7 +126,7 @@ check_dependencies() {
     fi
   done
 
-  if [[ missingDeps -eq 1 ]]; then
+  if [[ $missingDeps -eq 1 ]]; then
     exit 1
   fi
 }
