@@ -126,7 +126,7 @@ check_dependencies() {
     fi
   done
 
-  if [[ missingDeps -eq 1 ]]; then
+  if [[ $missingDeps -eq 1 ]]; then
     exit 1
   fi
 }
@@ -157,8 +157,10 @@ clean() {
   rm -f /tmp/tmp.wget
   rm -f /tmp/ffmpeg.log
   rm -f /tmp/ffmpeg*.stderr
+  rm -f /tmp/ffmpeg*.stderr.prev
   rm -f /tmp/gstreamer.log
   rm -f /tmp/gst*.stderr
+  rm -f /tmp/gst*.stderr.prev
 }
 
 download() {
