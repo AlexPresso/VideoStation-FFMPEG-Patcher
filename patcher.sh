@@ -97,6 +97,9 @@ info() {
 error() {
   log "ERROR" "$1"
 }
+success() {
+  log "SUCCESS" "$1"
+}
 
 root_check() {
   if [[ "$EUID" -ne 0 ]]; then
@@ -260,8 +263,11 @@ patch() {
     cp -n "$cp_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf"
   fi
 
+  info "Downloading config file..."
+  download "$repo_base_url/$branch/patch_config.sh" "$vs_path/patch_config.sh"
+
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
-  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_path/bin/ffmpeg"
+  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_path/patch_config.sh"
 
   info "Saving current libsynovte.so as libsynovte.so.orig"
   cp -n "$libsynovte_path" "$libsynovte_path.orig"
@@ -274,7 +280,7 @@ patch() {
   clean
 
   echo ""
-  info "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
+  success "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
 }
 
 unpatch() {
@@ -327,11 +333,14 @@ unpatch() {
     fi
   fi
 
+  info "Remove patch config."
+  rm -f "$vs_path/patch_config.sh"
+
   restart_packages
   clean
 
   echo ""
-  info "unpatch complete"
+  success "unpatch complete"
 }
 
 ################################

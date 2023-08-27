@@ -4,10 +4,13 @@
 # VARS
 #########################
 
+ffmpeg_version=ffmpeg
 pid=$$
 child=""
 stderrfile="/tmp/ffmpeg-$pid.stderr"
 errcode=0
+
+source "/var/packages/VideoStation/patch_config.sh"
 
 #########################
 # UTILS
@@ -49,6 +52,25 @@ endprocess() {
   exit $errcode
 }
 
+fix_args() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -vf)
+        shift
+        if [[ "$1" = "libfaac" ]]; then
+          args+=("-acodec" "aac")
+        else
+          args+=("-acodec" "libfdk_aac")
+        fi
+        ;;
+
+      *) args+=("$1") ;;
+    esac
+
+    shift
+  done
+}
+
 #########################
 # ENTRYPOINT
 #########################
@@ -58,11 +80,14 @@ trap handle_error ERR
 
 rm -f /tmp/ffmpeg*.stderr.prev
 
+fix_args "$@"
+
 newline
 info "========================================[start ffmpeg $pid]"
 info "DEFAULT ARGS: $*"
+info "UPDATED ARGS: ${args[*]}"
 
-/var/packages/@ffmpeg_version@/target/bin/ffmpeg "$@" <&0 2>> $stderrfile &
+"/var/packages/${ffmpeg_version}/target/bin/ffmpeg" "${args[@]}" <&0 2>> $stderrfile &
 
 child=$!
 wait "$child"
