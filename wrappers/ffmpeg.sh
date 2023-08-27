@@ -10,6 +10,7 @@ child=""
 stderrfile="/tmp/ffmpeg-$pid.stderr"
 errcode=0
 
+# shellcheck source=/patch_config.sh
 source "/var/packages/VideoStation/patch_config.sh"
 
 #########################
