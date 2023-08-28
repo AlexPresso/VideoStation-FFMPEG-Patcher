@@ -46,8 +46,12 @@ Patch Details......................................
   Is patched ? $([ -f "$vs_path/target/lib/libsynovte.so.orig" ] && echo "yes" || echo "no")
   Has gstreamer ? $([ -f "$vs_path/target/bin/gst-launch-1.0" ] && echo "yes" || echo "no")
 
-VAAPI..............................................
+FFMPEG VAAPI.......................................
   $("/var/packages/${ffmpeg_version}/target/bin/vainfo" || echo "No VAAPI Support")
+
+CodecPack Details..................................
+  Has AAC ? $([ -f "$cp_path/target/pack/HAS_AAC" ] && echo "yes" || echo "no")
+  Has HEVC ? $([ -f "$cp_path/target/pack/HAS_HEVC" ] && echo "yes" || echo "no")
 "
 
 echo "CodecPack target/bin content......................."
