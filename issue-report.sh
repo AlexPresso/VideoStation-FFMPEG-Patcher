@@ -45,40 +45,43 @@ Package Details....................................
 Patch Details......................................
   Is patched ? $([ -f "$vs_path/target/lib/libsynovte.so.orig" ] && echo "yes" || echo "no")
   Has gstreamer ? $([ -f "$vs_path/target/bin/gst-launch-1.0" ] && echo "yes" || echo "no")
+
+VAAPI..............................................
+  $("/var/packages/${ffmpeg_version}/target/bin/vainfo" || echo "No VAAPI Support")
 "
 
-echo "  CodecPack target/bin content:"
+echo "CodecPack target/bin content......................."
 ls -l "$cp_path/target/bin"
 echo ""
-echo "  CodecPack target/pack/bin content:"
+echo "CodecPack target/pack/bin content.................."
 ls -l "$cp_path/target/pack/bin"
 echo ""
-echo "  CodecPack status:"
+echo "CodecPack status..................................."
 cat "$cp_path/var/codec_requirements.json" || echo "file not exists"
 
 echo ""
 
 echo ""
-echo "GSTInspect last stderr logs........................."
+echo "GSTInspect last stderr logs........................"
 tail -22 /tmp/gstinspect*.stderr
 echo ""
-echo "GSTInspect stderr.prev logs........................."
+echo "GSTInspect stderr.prev logs........................"
 cat /tmp/gstinspect*.stderr.prev
 echo ""
-echo "GSTLaunch last stderr logs.........................."
+echo "GSTLaunch last stderr logs........................."
 tail -22 /tmp/gstlaunch*.stderr
 echo ""
-echo "GSTLaunch stderr.prev logs.........................."
+echo "GSTLaunch stderr.prev logs........................."
 cat /tmp/gstlaunch*.stderr.prev
 
 echo ""
-echo "FFMPEG head logs...................................."
+echo "FFMPEG head logs..................................."
 head /tmp/ffmpeg*.stderr
 echo ""
-echo "FFMPEG last stderr logs............................."
+echo "FFMPEG last stderr logs............................"
 tail -22 /tmp/ffmpeg*.stderr
 
 echo ""
-echo "FFMPEG prev logs...................................."
+echo "FFMPEG prev logs..................................."
 cat /tmp/ffmpeg*.stderr.prev
 echo ""
