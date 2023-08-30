@@ -65,6 +65,10 @@ fix_args() {
         fi
         ;;
 
+      -r)
+        shift
+        ;;
+
       *) args+=("$1") ;;
     esac
 
