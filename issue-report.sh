@@ -32,6 +32,7 @@ root_check
 
 echo "
 ================ ISSUE REPORT TOOL ================
+https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher
 
 System Details.....................................
   DSM Version: $dsm_version
