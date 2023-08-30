@@ -264,10 +264,10 @@ patch() {
   fi
 
   info "Downloading config file..."
-  download "$repo_base_url/$branch/patch_config.sh" "$vs_path/patch_config.sh"
+  download "$repo_base_url/$branch/patch_config.sh" "$vs_base_path/patch_config.sh"
 
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
-  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_path/patch_config.sh"
+  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_base_path/patch_config.sh"
 
   info "Saving current libsynovte.so as libsynovte.so.orig"
   cp -n "$libsynovte_path" "$libsynovte_path.orig"
@@ -334,7 +334,7 @@ unpatch() {
   fi
 
   info "Remove patch config."
-  rm -f "$vs_path/patch_config.sh"
+  rm -f "$vs_base_path/patch_config.sh"
 
   restart_packages
   clean
