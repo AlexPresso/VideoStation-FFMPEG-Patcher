@@ -56,7 +56,7 @@ endprocess() {
 fix_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -vf)
+      -acodec)
         shift
         if [[ "$1" = "libfaac" ]]; then
           args+=("-acodec" "aac")
