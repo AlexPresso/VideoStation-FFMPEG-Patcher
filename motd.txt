@@ -1,6 +1,4 @@
-The patcher now supports every scenario including gstreamer (credits to @nap-liu).
-
-A new version of the wrapper was deployed (v2.1).
-You can find the changelog here: https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/releases/tag/2.1
+A new version of the wrapper was deployed (v2.2) fixing some issues with HEVC and AAC transcoding.
+You can find the changelog here: https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/releases/tag/2.2
 
 As always, please let me know of any issue you could have.
