@@ -89,13 +89,25 @@ gstreamer_libs=(
 ###############################
 
 log() {
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2"
+  printf "\e[0;37m[%s] \e[0m[%s] %b" "$(date '+%Y-%m-%d %H:%M:%S')" "$1" "$2$3"
 }
 info() {
-  log "INFO" "$1"
+  log "INFO" "\e[0m" "$1\n"
 }
 error() {
-  log "ERROR" "$1"
+  log "ERROR" "\e[0;31m" "$1\n"
+}
+success() {
+  log "SUCCESS" "\e[0;32m" "$1\n"
+}
+
+welcome_motd() {
+  info "ffmpeg-patcher v$version"
+
+  download "motd" "$repo_base_url/$branch/motd.txt" /tmp/tmp.wget
+  log "Message of the day" "\033[1;33m" "\n\n$(cat /tmp/tmp.wget)\n\n"
+
+  sleep 3
 }
 
 root_check() {
@@ -103,17 +115,6 @@ root_check() {
     error "This tool needs root access (please run 'sudo -i' before proceeding)."
     exit 1
   fi
-}
-
-welcome_motd() {
-  info "ffmpeg-patcher v$version"
-
-  download "$repo_base_url/$branch/motd.txt" /tmp/tmp.wget
-
-  log "Message of the day"
-  echo ""
-  cat /tmp/tmp.wget
-  echo ""
 }
 
 check_dependencies() {
@@ -164,16 +165,20 @@ clean() {
 }
 
 download() {
-  wget -q -O - "$1" > /tmp/temp.wget
+  log "INFO" "\e[0m" "Downloading $1... "
+
+  wget -q -O - "$2" > /tmp/temp.wget
   downloadStatus=$?
 
   if [[ $downloadStatus == 0 ]]; then
-    mv -f /tmp/temp.wget "$2"
+    mv -f /tmp/temp.wget "$3"
+    printf "\e[0;32mDone\n"
   else
-    error "An error occurred while downloading $1. Rolling back changes..."
+    printf "\e[0;31mError\n"
+    error "An error occurred while downloading $2. Rolling back changes..."
     unpatch
 
-    error "An error occurred while downloading $1, every changes were rolled back."
+    error "An error occurred while downloading $2, every changes were rolled back."
     error "Please check your internet connection / GithubStatus. If you think this is an error, please file an issue to the repository."
     exit 1
   fi
@@ -198,8 +203,7 @@ patch() {
       info "Saving current $filename script as $filename.orig"
       mv -n "$vs_base_path/scripts/$filename" "$vs_base_path/scripts/$filename.orig"
 
-      info "Downloading $filename script..."
-      download "$repo_base_url/$branch/scripts/$filename.sh" "$vs_base_path/scripts/$filename"
+      download "$filename.sh" "$repo_base_url/$branch/scripts/$filename.sh" "$vs_base_path/scripts/$filename"
 
       info "Injecting script variables..."
       repo_full_url="$repo_base_url/$branch"
@@ -214,8 +218,7 @@ patch() {
       info "Saving current $filename as $filename.orig"
       mv -n "$vs_path/bin/$filename" "$vs_path/bin/$filename.orig"
 
-      info "Downloading and installing $filename's wrapper..."
-      download "$repo_base_url/$branch/wrappers/$filename.sh" "$vs_path/bin/$filename"
+      download "$filename.sh" "$repo_base_url/$branch/wrappers/$filename.sh" "$vs_path/bin/$filename"
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
@@ -240,8 +243,7 @@ patch() {
     info "Downloading gstreamer plugins..."
 
     for plugin in "${gstreamer_plugins[@]}"; do
-      info "Downloading $plugin to gstreamer directory..."
-      download "$repo_base_url/$branch/plugins/$plugin.so" "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+      download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
     done
 
     mkdir -p "$vs_path/lib/gstreamer/dri"
@@ -249,8 +251,7 @@ patch() {
     mkdir -p "$vs_path/lib/gstreamer/x265-10bit"
 
     for lib in "${gstreamer_libs[@]}"; do
-      info "Downloading $lib to gstreamer directory..."
-      download "$repo_base_url/$branch/libs/$lib" "$vs_path/lib/gstreamer/$lib"
+      download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$vs_path/lib/gstreamer/$lib"
     done
 
     info "Saving current GSTOmx configuration..."
@@ -260,8 +261,10 @@ patch() {
     cp -n "$cp_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf"
   fi
 
+  download "patch_config.sh" "$repo_base_url/$branch/patch_config.sh" "$vs_base_path/patch_config.sh"
+
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
-  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_path/bin/ffmpeg"
+  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_base_path/patch_config.sh"
 
   info "Saving current libsynovte.so as libsynovte.so.orig"
   cp -n "$libsynovte_path" "$libsynovte_path.orig"
@@ -273,8 +276,7 @@ patch() {
   restart_packages
   clean
 
-  echo ""
-  info "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
+  success "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
 }
 
 unpatch() {
@@ -327,11 +329,13 @@ unpatch() {
     fi
   fi
 
+  info "Remove patch config."
+  rm -f "$vs_base_path/patch_config.sh"
+
   restart_packages
   clean
 
-  echo ""
-  info "unpatch complete"
+  success "Unpatch complete"
 }
 
 ################################
