@@ -8,7 +8,6 @@
 source "/etc/VERSION"
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 repo_base_url="https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher"
-version="2.0"
 action="patch"
 branch="main"
 ffmpegversion=""
@@ -102,7 +101,7 @@ success() {
 }
 
 welcome_motd() {
-  info "ffmpeg-patcher v$version"
+  info "ffmpeg-patcher"
 
   download "motd" "$repo_base_url/$branch/motd.txt" /tmp/tmp.wget
   log "Message of the day" "\033[1;33m" "\n\n$(cat /tmp/tmp.wget)\n\n"
