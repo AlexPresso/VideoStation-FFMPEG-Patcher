@@ -70,9 +70,8 @@ fix_args() {
         arg="$1"
 
         if [[ "$arg" =~ "scale_vaapi" ]]; then
-          scale_w=$(echo "$arg" | sed -e 's/.*=w=//g' | sed -e 's/:h=.*//g')
-          # shellcheck disable=SC2001
-          scale_h=$(echo "$arg" | sed -e 's/.*:h=//g')
+          scale_w=$(echo "$arg" | sed -n 's/.*w=\([0-9]\+\):h=\([0-9]\+\).*/\2/p')
+          scale_h=$(echo "$arg" | sed -n 's/.*w=\([0-9]\+\):h=\([0-9]\+\).*/\1/p')
           if (( scale_w && scale_h )); then
             arg="scale_vaapi=w=$scale_w:h=$scale_h:format=nv12,hwupload,setsar=sar=1"
           else
