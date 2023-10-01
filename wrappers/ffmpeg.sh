@@ -74,9 +74,9 @@ fix_args() {
           scale_h=$(echo "$arg" | sed -n 's/.*w=\([0-9]\+\):h=\([0-9]\+\).*/\2/p')
 
           if (( scale_w && scale_h )); then
-            arg="scale_vaapi=w=$scale_w:h=$scale_h:format=nv12|vaapi,hwupload,setsar=sar=1"
+            arg="scale_vaapi=w=$scale_w:h=$scale_h:format=nv12,hwupload,setsar=sar=1"
           else
-            arg="scale_vaapi=format=nv12|vaapi,hwupload,setsar=sar=1"
+            arg="scale_vaapi=format=nv12,hwupload,setsar=sar=1"
           fi
         fi
 
