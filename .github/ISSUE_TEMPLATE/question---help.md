@@ -7,5 +7,7 @@ assignees: ''
 
 ---
 
+Please check the [FAQ](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/wiki/FAQ) before posting any question.
+
 **Question**
 [ask your question here, please put every logs / code in codeblocks or in a [gist](https://gist.github.com/)]
