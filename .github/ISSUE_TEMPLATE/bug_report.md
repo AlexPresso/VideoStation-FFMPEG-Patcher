@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-# Before posting any bug issue, please make sure you have patched a clean VideoStation / AME install by doing the following:
+# Before posting any bug issue, please check the [FAQ](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/wiki/FAQ) and make sure you have patched a clean VideoStation / AME install by doing the following:
 - Uninstall VideoStation (keep your library)
 - Uninstall Advanced Media Extensions
 - Re-install VideoStation (it should also ask to install Advanced Media Extensions)
