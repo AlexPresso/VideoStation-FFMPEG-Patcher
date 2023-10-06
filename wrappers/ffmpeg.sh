@@ -47,7 +47,7 @@ endprocess() {
   newline
 
   if [[ $errcode -eq 1 ]]; then
-    cat "$stderrfile" >> "$stderrfile.prev"
+    cp "$stderrfile" "$stderrfile.prev"
   fi
 
   kill_child
