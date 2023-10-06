@@ -127,7 +127,7 @@ if [[ $errcode -eq 0 ]]; then
 fi
 
 info "Trying with VideoStation's ffmpeg with default args..."
-/var/packages/VideoStation/target/bin/ffmpeg.orig "${@}" <&0 2>> $stderrfile &
+/var/packages/VideoStation/target/bin/ffmpeg.orig "$@" <&0 2>> $stderrfile &
 child=$!
 wait "$child"
 
