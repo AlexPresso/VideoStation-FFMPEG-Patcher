@@ -33,7 +33,13 @@ handle_error() {
   log "ERROR" "An error occurred"
   newline
   errcode=1
-  endprocess
+  kill_child
+}
+
+kill_child() {
+  if [[ "$child" != "" ]]; then
+    kill "$child"
+  fi
 }
 
 endprocess() {
@@ -41,14 +47,11 @@ endprocess() {
   newline
 
   if [[ $errcode -eq 1 ]]; then
-    cp "$stderrfile" "$stderrfile.prev"
+    cat "$stderrfile" >> "$stderrfile.prev"
   fi
 
+  kill_child
   rm -f "$stderrfile"
-
-  if [[ "$child" != "" ]]; then
-    kill "$child"
-  fi
 
   exit $errcode
 }
@@ -114,8 +117,26 @@ info "========================================[start ffmpeg $pid]"
 info "DEFAULT ARGS: $*"
 info "UPDATED ARGS: ${args[*]}"
 
-"/var/packages/${ffmpeg_version}/target/bin/ffmpeg" "${args[@]}" <&0 2>> $stderrfile &
+info "Trying with VideoStation's ffmpeg with fixed args..."
+/var/packages/VideoStation/target/bin/ffmpeg.orig "${args[@]}" <&0 2>> $stderrfile &
+child=$!
+wait "$child"
 
+if [[ $errcode -eq 0 ]]; then
+  endprocess
+fi
+
+info "Trying with VideoStation's ffmpeg with default args..."
+/var/packages/VideoStation/target/bin/ffmpeg.orig "${@}" <&0 2>> $stderrfile &
+child=$!
+wait "$child"
+
+if [[ $errcode -eq 0 ]]; then
+  endprocess
+fi
+
+info "Trying with SC's ffmpeg and fixed args..."
+"/var/packages/${ffmpeg_version}/target/bin/ffmpeg" "${args[@]}" <&0 2>> $stderrfile &
 child=$!
 wait "$child"
 
