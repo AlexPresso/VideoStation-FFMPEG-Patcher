@@ -1,4 +1,4 @@
-A new version of the wrapper was deployed (v2.3) fixing some issues with scale_vaapi.
-You can find the changelog here: https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/releases/tag/2.3
+A new version of the wrapper was deployed (v2.4) fixing some issues with hardware transcoding.
+You can find the changelog here: https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/releases/tag/2.4
 
 As always, please let me know of any issue you could have.
