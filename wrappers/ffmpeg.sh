@@ -90,10 +90,6 @@ fix_args() {
         shift
         ;;
 
-      -pix_fmt)
-        shift
-        ;;
-
       *) args+=("$1") ;;
     esac
 
