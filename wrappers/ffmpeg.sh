@@ -122,6 +122,7 @@ if [[ $errcode -eq 0 ]]; then
   endprocess
 fi
 
+errcode=0
 info "Trying with VideoStation's ffmpeg with default args..."
 /var/packages/VideoStation/target/bin/ffmpeg.orig "$@" <&0 2>> $stderrfile &
 child=$!
@@ -131,6 +132,7 @@ if [[ $errcode -eq 0 ]]; then
   endprocess
 fi
 
+errcode=0
 info "Trying with SC's ffmpeg and fixed args..."
 "/var/packages/${ffmpeg_version}/target/bin/ffmpeg" "${args[@]}" <&0 2>> $stderrfile &
 child=$!
