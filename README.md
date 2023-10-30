@@ -30,6 +30,11 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
   - Note : Basic command uses **ffmpeg4** by default, if you want to use a different ffmpeg version (i.e. **ffmpeg5** or **ffmpeg6**), please check the command [flags](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage).
 - You'll have to re-run the patcher everytime you update VideoStation, Advanced Media Extensions and DSM
 
+## Update procedure
+To update the wrapper, just unpatch and repatch using the following commands:
+- Unpatch: `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- -a unpatch`
+- Patch: `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`
+
 ## Usage
 Basic command:  
 `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`   
