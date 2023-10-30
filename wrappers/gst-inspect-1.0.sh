@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export GST_DEBUG=1 #1: ERROR (Log fatal errors only).
+
 #########################
 # VARS
 #########################
