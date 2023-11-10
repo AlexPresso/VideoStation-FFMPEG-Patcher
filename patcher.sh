@@ -197,21 +197,6 @@ patch() {
     exit 1
   fi
 
-  for filename in "${vs_scripts[@]}"; do
-    if [[ -f "$vs_base_path/scripts/$filename" ]]; then
-      info "Saving current $filename script as $filename.orig"
-      mv -n "$vs_base_path/scripts/$filename" "$vs_base_path/scripts/$filename.orig"
-
-      download "$filename.sh" "$repo_base_url/$branch/scripts/$filename.sh" "$vs_base_path/scripts/$filename"
-
-      info "Injecting script variables..."
-      repo_full_url="$repo_base_url/$branch"
-      sed -i -e "s|@repo_full_url@|$repo_full_url|" "$vs_base_path/scripts/$filename"
-
-      chmod 755 "$vs_base_path/scripts/$filename"
-    fi
-  done
-
   for filename in "${wrappers[@]}"; do
     if [[ -f "$vs_path/bin/$filename" ]]; then
       info "Saving current $filename as $filename.orig"
@@ -329,11 +314,6 @@ unpatch() {
 
   find "$vs_path/bin" -type f -name "*.orig" | while read -r filename; do
     info "Restoring VideoStation's $filename"
-    mv -T -f "$filename" "${filename::-5}"
-  done
-
-  find "$vs_base_path/scripts" -type f -name "*.orig" | while read -r filename; do
-    info "Restoring VideoStation's $filename script"
     mv -T -f "$filename" "${filename::-5}"
   done
 

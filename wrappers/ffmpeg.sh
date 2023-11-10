@@ -12,13 +12,17 @@ errcode=0
 path=$(realpath "$0")
 args=()
 
-# shellcheck source=/utils/patch_config.sh
-source "/var/packages/VideoStation/patch/patch_config.sh" | source "/var/packages/CodecPack/patch/patch_config.sh"
-# shellcheck source=/utils/patch_utils.sh
-source "/var/packages/VideoStation/patch/patch_utils.sh" | source "/var/packages/CodecPack/patch/patch_utils.sh"
-
 #########################
 # UTILS
+#########################
+
+# shellcheck source=/utils/patch_config.sh
+source "/var/packages/VideoStation/patch/patch_config.sh" || source "/var/packages/CodecPack/patch/patch_config.sh"
+# shellcheck source=/utils/patch_utils.sh
+source "/var/packages/VideoStation/patch/patch_utils.sh" || source "/var/packages/CodecPack/patch/patch_utils.sh"
+
+#########################
+# ENTRYPOINT
 #########################
 
 trap endprocess SIGINT SIGTERM
@@ -29,11 +33,11 @@ rm -f /tmp/ffmpeg*.stderr.prev
 fix_args "$@"
 
 newline
-info "========================================[start ffmpeg $pid]"
+info "========================================[start $0 $pid]"
 info "DEFAULT ARGS: $*"
 info "UPDATED ARGS: ${args[*]}"
 
-info "Trying fixed args with $path..."
+info "Trying fixed args with $path.orig ..."
 "${path}.orig" "${args[@]}" <&0 2>> $stderrfile &
 child=$!
 wait "$child"
@@ -43,7 +47,7 @@ if [[ $errcode -eq 0 ]]; then
 fi
 
 errcode=0
-info "Trying default args with $path..."
+info "Trying default args with $path.orig ..."
 "${path}.orig" "$@" <&0 2>> $stderrfile &
 child=$!
 wait "$child"
@@ -53,7 +57,7 @@ if [[ $errcode -eq 0 ]]; then
 fi
 
 errcode=0
-info "Trying with SC's ffmpeg and fixed args..."
+info "Trying with SC's $ffmpeg_version and fixed args..."
 "/var/packages/${ffmpeg_version}/target/bin/ffmpeg" "${args[@]}" <&0 2>> $stderrfile &
 child=$!
 wait "$child"

@@ -9,47 +9,15 @@ export GST_DEBUG=1 #1: ERROR (Log fatal errors only).
 pid=$$
 child=""
 stderrfile="/tmp/gstinspect-$pid.stderr"
+path=$(realpath "$0")
 errcode=0
 
 #########################
 # UTILS
 #########################
 
-log() {
-  local now
-  now=$(date '+%Y-%m-%d %H:%M:%S')
-  echo "[$now] [$1] $2" >> $stderrfile
-}
-newline() {
-  echo "" >> $stderrfile
-}
-info() {
-  log "INFO" "$1"
-}
-
-handle_error() {
-  log "ERROR" "An error occurred"
-  newline
-  errcode=1
-  endprocess
-}
-
-endprocess() {
-  info "========================================[end gst $pid]"
-  newline
-
-  if [[ $errcode -eq 1 ]]; then
-    cp "$stderrfile" "$stderrfile.prev"
-  fi
-
-  rm "$stderrfile"
-
-  if [[ "$child" != "" ]]; then
-    kill "$child"
-  fi
-
-  exit $errcode
-}
+# shellcheck source=/utils/patch_utils.sh
+source "/var/packages/VideoStation/patch/patch_utils.sh" || source "/var/packages/CodecPack/patch/patch_utils.sh"
 
 #########################
 # ENTRYPOINT
@@ -64,7 +32,7 @@ newline
 info "========================================[start gst-inspect $pid]"
 info "GST_ARGS: $*"
 
-/var/packages/VideoStation/target/bin/gst-inspect-1.0.orig "$@" 2>> $stderrfile &
+"$path.orig" "$@" 2>> $stderrfile &
 
 child=$!
 wait "$child"
