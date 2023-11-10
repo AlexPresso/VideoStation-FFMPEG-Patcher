@@ -12,7 +12,7 @@ errcode=0
 path=$(realpath "$0")
 args=()
 
-# shellcheck source=/patch_config.sh
+# shellcheck source=/utils/patch_config.sh
 source "/var/packages/VideoStation/patch/patch_config.sh" | source "/var/packages/CodecPack/patch/patch_config.sh"
 # shellcheck source=/utils/patch_utils.sh
 source "/var/packages/VideoStation/patch/patch_utils.sh" | source "/var/packages/CodecPack/patch/patch_utils.sh"
