@@ -5,7 +5,7 @@ export GST_DEBUG=1 #1: ERROR (Log fatal errors only).
 # shellcheck source=/utils/patch_utils.sh
 source "/var/packages/VideoStation/patch/patch_utils.sh" 2> /dev/null ||
 source "/var/packages/CodecPack/patch/patch_utils.sh" 2> /dev/null ||
-{ echo "Cannot load patch_utils.sh" >> "$stderrfile.prev" && echo "Cannot load patch_utils.sh" && exit 1; }
+{ echo "Cannot load patch_utils.sh" >> "gstinspect-${$$}.stderr.prev" && echo "Cannot load patch_utils.sh" && exit 1; }
 
 #########################
 # VARS
