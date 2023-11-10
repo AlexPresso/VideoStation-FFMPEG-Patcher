@@ -20,7 +20,6 @@ wrappers=(
 vs_base_path=/var/packages/VideoStation
 vs_path="$vs_base_path/target"
 libsynovte_path="$vs_path/lib/libsynovte.so"
-vs_scripts=("preuninst")
 cp_base_path=/var/packages/CodecPack
 cp_path="$cp_base_path/target"
 cp_bin_path="$cp_path/bin"

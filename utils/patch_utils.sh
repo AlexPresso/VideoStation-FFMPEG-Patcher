@@ -1,13 +1,17 @@
 #!/bin/bash
 
+stderrfile=/dev/null
+child=""
+pid=""
+
 log() {
   local now
   now=$(date '+%Y-%m-%d %H:%M:%S')
-  echo "[$now] [$1] $2" >> $stderrfile
+  echo "[$now] [$1] $2" >> "$stderrfile"
 }
 
 newline() {
-  echo "" >> $stderrfile
+  echo "" >> "$stderrfile"
 }
 
 info() {
@@ -31,7 +35,7 @@ endprocess() {
   kill_child
   rm -f "$stderrfile"
 
-  exit $errcode
+  exit "$errcode"
 }
 
 handle_error() {
