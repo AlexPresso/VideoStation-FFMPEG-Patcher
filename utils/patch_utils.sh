@@ -16,7 +16,7 @@ info() {
 
 kill_child() {
   if [[ "$child" != "" ]]; then
-    kill "$child"
+    kill "$child" > /dev/null 2> /dev/null || :
   fi
 }
 

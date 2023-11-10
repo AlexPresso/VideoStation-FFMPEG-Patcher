@@ -218,17 +218,13 @@ patch() {
         info "Patching CodecPack's $filename"
 
         mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
-        download "$filename.sh" "$repo_base_url/$branch/wrappers/$target.sh" "$cp_bin_path/$target"
-        chmod 750 "$cp_bin_path/$target"
-        chmod u+s "$cp_bin_path/$target"
-
-        if [[ "$filename" != "$target" ]]; then
-          ln -s -f "$cp_bin_path/$target" "$cp_bin_path/$filename"
-        fi
+        download "$filename.sh" "$repo_base_url/$branch/wrappers/$target.sh" "$cp_bin_path/$filename"
+        chmod 750 "$cp_bin_path/$filename"
+        chmod u+s "$cp_bin_path/$filename"
       fi
     done
 
-    if [[ -f "$cp_bin_path/gst-launch-1.0" ]]; then
+    if [[ -d "$cp_path/lib/gstreamer" ]]; then
       gst_lib_path="$cp_path/lib/gstreamer/patch"
       gst_plugin_path="$cp_path/lib/gstreamer/gstreamer-1.0/patch"
 
@@ -332,7 +328,7 @@ unpatch() {
       fi
     done
 
-    if [[ -f "$cp_bin_path/gst-launch-1.0" ]]; then
+    if [[ -d "$cp_path/lib/gstreamer" ]]; then
       info "Removing CodecPack gstreamer's patched libraries and plugins"
       rm -rf "$cp_path/lib/gstreamer/patch"
       rm -rf "$cp_path/lib/gstreamer/gstreamer-1.0/patch"
@@ -343,7 +339,7 @@ unpatch() {
   fi
 
   if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
-    info "Removing VideoStation gstreamer's patched libraries"
+    info "Removing VideoStation gstreamer's patched libraries and plugins"
     rm -rf "$vs_path/lib/gstreamer/patch"
     rm -rf "$vs_path/lib/gstreamer/gstreamer-1.0/patch"
 
