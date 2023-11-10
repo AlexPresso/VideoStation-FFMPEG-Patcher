@@ -263,6 +263,7 @@ patch() {
 
     info "Downloading gstreamer plugins..."
 
+    mkdir "$gst_plugin_path"
     for plugin in "${gstreamer_plugins[@]}"; do
       download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$gst_plugin_path/$plugin.so"
     done
@@ -271,6 +272,7 @@ patch() {
     mkdir -p "$gst_lib_path/x264-10bit"
     mkdir -p "$gst_lib_path/x265-10bit"
 
+    mkdir "$gst_lib_path"
     for lib in "${gstreamer_libs[@]}"; do
       download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
     done

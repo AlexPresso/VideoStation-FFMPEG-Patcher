@@ -14,6 +14,26 @@ info() {
   log "INFO" "$1"
 }
 
+kill_child() {
+  if [[ "$child" != "" ]]; then
+    kill "$child"
+  fi
+}
+
+endprocess() {
+  info "========================================[end $0 $pid]"
+  newline
+
+  if [[ $errcode -eq 1 ]]; then
+    cp "$stderrfile" "$stderrfile.prev"
+  fi
+
+  kill_child
+  rm -f "$stderrfile"
+
+  exit $errcode
+}
+
 handle_error() {
   log "ERROR" "An error occurred"
   newline
