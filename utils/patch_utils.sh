@@ -2,7 +2,7 @@
 
 stderrfile=/dev/null
 child=""
-pid=""
+pid=$$
 
 log() {
   local now
