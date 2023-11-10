@@ -233,50 +233,61 @@ patch() {
         info "Patching CodecPack's $filename"
 
         mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
-        download "$filename.sh" "$repo_base_url/$branch/wrappers/$filename.sh" "$cp_bin_path/$filename"
-        chmod 750 "$cp_bin_path/$filename"
-        chmod u+s "$cp_bin_path/$filename"
+        download "$filename.sh" "$repo_base_url/$branch/wrappers/$target.sh" "$cp_bin_path/$target"
+        chmod 750 "$cp_bin_path/$target"
+        chmod u+s "$cp_bin_path/$target"
 
-        ln -s -f "$cp_bin_path/$filename" "$cp_bin_path/$target"
+        if [[ "$filename" != "$target" ]]; then
+          ln -s -f "$cp_bin_path/$target" "$cp_bin_path/$filename"
+        fi
       fi
     done
 
     if [[ -f "$cp_bin_path/gst-launch-1.0" ]]; then
+      gst_lib_path="$cp_path/lib/gstreamer/patch"
+      gst_plugin_path="$cp_path/lib/gstreamer/gstreamer-1.0/patch"
+
       info "Downloading CodecPack's gstreamer plugins..."
 
+      mkdir "$gst_plugin_path"
       for plugin in "${gstreamer_plugins[@]}"; do
-        download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$cp_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+        download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$gst_plugin_path/$plugin.so"
       done
 
-      mkdir -p "$cp_path/lib/gstreamer/dri"
-      mkdir -p "$cp_path/lib/gstreamer/x264-10bit"
-      mkdir -p "$cp_path/lib/gstreamer/x265-10bit"
+      mkdir -p "$gst_lib_path/dri"
+      mkdir -p "$gst_lib_path/x264-10bit"
+      mkdir -p "$gst_lib_path/x265-10bit"
 
+      mkdir "$gst_lib_path"
       for lib in "${gstreamer_libs[@]}"; do
-        download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$cp_path/lib/gstreamer/$lib"
+        download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
       done
-
-      info "Setting CodecPack's ffmpeg version to: ffmpeg$ffmpegversion"
-      sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$cp_base_path/patch/patch_config.sh"
     fi
 
+    mkdir "$cp_base_path/patch"
     download "CodecPack's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$cp_base_path/patch/patch_config.sh"
     download "CodecPack's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$cp_base_path/patch/patch_utils.sh"
+
+    info "Setting CodecPack's ffmpeg version to: ffmpeg$ffmpegversion"
+    sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$cp_base_path/patch/patch_config.sh"
   fi
 
   if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
+    gst_lib_path="$vs_path/lib/gstreamer/patch"
+    gst_plugin_path="$vs_path/lib/gstreamer/gstreamer-1.0/patch"
+
     info "Downloading gstreamer plugins..."
 
     for plugin in "${gstreamer_plugins[@]}"; do
-      download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+      download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$gst_plugin_path/$plugin.so"
     done
 
-    mkdir -p "$vs_path/lib/gstreamer/dri"
-    mkdir -p "$vs_path/lib/gstreamer/x264-10bit"
-    mkdir -p "$vs_path/lib/gstreamer/x265-10bit"
+    mkdir -p "$gst_lib_path/dri"
+    mkdir -p "$gst_lib_path/x264-10bit"
+    mkdir -p "$gst_lib_path/x265-10bit"
 
     for lib in "${gstreamer_libs[@]}"; do
-      download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$vs_path/lib/gstreamer/$lib"
+      download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
     done
 
     info "Saving current GSTOmx configuration..."
@@ -286,6 +297,7 @@ patch() {
     cp -n "$cp_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf"
   fi
 
+  mkdir "$vs_base_path/patch"
   download "VideoStation's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$vs_base_path/patch/patch_config.sh"
   download "VideoStation's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$vs_base_path/patch/patch_utils.sh"
 
@@ -328,6 +340,9 @@ unpatch() {
   if [[ -d $cp_bin_path ]]; then
     for file in "${cp_to_patch[@]}"; do
       filename="${file%%:*}"
+      target="${file##*:}"
+
+      rm -f "$cp_bin_path/$target"
 
       if [[ -f  "$cp_bin_path/$filename.orig" ]]; then
         info "Restoring CodecPack's $filename"
@@ -335,20 +350,20 @@ unpatch() {
       fi
     done
 
+    if [[ -f "$cp_bin_path/gst-launch-1.0" ]]; then
+      info "Removing CodecPack gstreamer's patched libraries and plugins"
+      rm -rf "$cp_path/lib/gstreamer/patch"
+      rm -rf "$cp_path/lib/gstreamer/gstreamer-1.0/patch"
+    fi
+
     info "Remove CodecPack's patch directory"
     rm -rf "$cp_base_path/patch"
   fi
 
   if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
-    for plugin in "${gstreamer_plugins[@]}"; do
-      info "Removing gstreamer's $plugin plugin"
-      rm -f "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
-    done
-
-    for lib in "${gstreamer_libs[@]}"; do
-      info "Removing gstreamer's $lib library"
-      rm -f "$vs_path/lib/gstreamer/$lib"
-    done
+    info "Removing VideoStation gstreamer's patched libraries"
+    rm -rf "$vs_path/lib/gstreamer/patch"
+    rm -rf "$vs_path/lib/gstreamer/gstreamer-1.0/patch"
 
     if [[ -f "$vs_path/etc/gstomx.conf.orig" ]]; then
       info "Restoring GSTOmx configuration..."
