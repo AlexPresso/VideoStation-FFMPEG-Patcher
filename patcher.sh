@@ -205,6 +205,8 @@ patch() {
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
+
+      sed -i -e "s/@package_name@/VideoStation/" "$vs_path/bin/$filename"
     fi
   done
 
@@ -220,6 +222,8 @@ patch() {
         download "$filename.sh" "$repo_base_url/$branch/wrappers/$target.sh" "$cp_bin_path/$filename"
         chmod 750 "$cp_bin_path/$filename"
         chmod u+s "$cp_bin_path/$filename"
+
+        sed -i -e "s/@package_name@/CodecPack/" "$cp_bin_path/$filename"
       fi
     done
 
@@ -234,11 +238,11 @@ patch() {
         download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$gst_plugin_path/$plugin.so"
       done
 
+      mkdir "$gst_lib_path"
       mkdir -p "$gst_lib_path/dri"
       mkdir -p "$gst_lib_path/x264-10bit"
       mkdir -p "$gst_lib_path/x265-10bit"
 
-      mkdir "$gst_lib_path"
       for lib in "${gstreamer_libs[@]}"; do
         download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
       done
@@ -263,11 +267,11 @@ patch() {
       download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$gst_plugin_path/$plugin.so"
     done
 
+    mkdir "$gst_lib_path"
     mkdir -p "$gst_lib_path/dri"
     mkdir -p "$gst_lib_path/x264-10bit"
     mkdir -p "$gst_lib_path/x265-10bit"
 
-    mkdir "$gst_lib_path"
     for lib in "${gstreamer_libs[@]}"; do
       download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
     done
