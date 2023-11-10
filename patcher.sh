@@ -233,9 +233,35 @@ patch() {
         info "Patching CodecPack's $filename"
 
         mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
-        ln -s -f "$vs_path/bin/$target" "$cp_bin_path/$filename"
+        download "$filename.sh" "$repo_base_url/$branch/wrappers/$filename.sh" "$cp_bin_path/$filename"
+        chmod 750 "$cp_bin_path/$filename"
+        chmod u+s "$cp_bin_path/$filename"
+
+        ln -s -f "$cp_bin_path/$filename" "$cp_bin_path/$target"
       fi
     done
+
+    if [[ -f "$cp_bin_path/gst-launch-1.0" ]]; then
+      info "Downloading CodecPack's gstreamer plugins..."
+
+      for plugin in "${gstreamer_plugins[@]}"; do
+        download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$cp_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+      done
+
+      mkdir -p "$cp_path/lib/gstreamer/dri"
+      mkdir -p "$cp_path/lib/gstreamer/x264-10bit"
+      mkdir -p "$cp_path/lib/gstreamer/x265-10bit"
+
+      for lib in "${gstreamer_libs[@]}"; do
+        download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$cp_path/lib/gstreamer/$lib"
+      done
+
+      info "Setting CodecPack's ffmpeg version to: ffmpeg$ffmpegversion"
+      sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$cp_base_path/patch/patch_config.sh"
+    fi
+
+    download "CodecPack's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$cp_base_path/patch/patch_config.sh"
+    download "CodecPack's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$cp_base_path/patch/patch_utils.sh"
   fi
 
   if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
@@ -260,10 +286,11 @@ patch() {
     cp -n "$cp_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf"
   fi
 
-  download "patch_config.sh" "$repo_base_url/$branch/patch_config.sh" "$vs_base_path/patch_config.sh"
+  download "VideoStation's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$vs_base_path/patch/patch_config.sh"
+  download "VideoStation's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$vs_base_path/patch/patch_utils.sh"
 
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
-  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_base_path/patch_config.sh"
+  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_base_path/patch/patch_config.sh"
 
   info "Saving current libsynovte.so as libsynovte.so.orig"
   cp -n "$libsynovte_path" "$libsynovte_path.orig"
@@ -307,6 +334,9 @@ unpatch() {
         mv -T -f "$cp_bin_path/$filename.orig" "$cp_bin_path/$filename"
       fi
     done
+
+    info "Remove CodecPack's patch directory"
+    rm -rf "$cp_base_path/patch"
   fi
 
   if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
@@ -328,8 +358,8 @@ unpatch() {
     fi
   fi
 
-  info "Remove patch config."
-  rm -f "$vs_base_path/patch_config.sh"
+  info "Remove VideoStation's patch directory."
+  rm -rf "$vs_base_path/patch"
 
   restart_packages
   clean
