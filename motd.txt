@@ -1,4 +1,6 @@
 A new version of the wrapper was deployed (v2.6) fixing an issue with offline transcoding.
 You can find the changelog here: https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/releases/tag/2.6
 
+/!\ PLEASE FOLLOW THE UPDATE PROCEDURE IN THE CHANGELOG TO UPDATE /!\
+
 As always, please let me know of any issue you could have.

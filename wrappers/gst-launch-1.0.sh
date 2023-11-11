@@ -1,6 +1,12 @@
 #!/bin/bash
 
 export GST_DEBUG=1 #1: ERROR (Log fatal errors only).
+export LD_LIBRARY_PATH=/var/packages/@package_name@/target/lib/gstreamer/patch
+
+# shellcheck source=/utils/patch_utils.sh
+source "/var/packages/VideoStation/patch/patch_utils.sh" 2> /dev/null ||
+source "/var/packages/CodecPack/patch/patch_utils.sh" 2> /dev/null ||
+{ echo "Cannot load patch_utils.sh" >> "gstlaunch-0.stderr.prev" && echo "Cannot load patch_utils.sh" && exit 1; }
 
 #########################
 # VARS
@@ -9,47 +15,8 @@ export GST_DEBUG=1 #1: ERROR (Log fatal errors only).
 pid=$$
 child=""
 stderrfile="/tmp/gstlaunch-$pid.stderr"
+path=$(realpath "$0")
 errcode=0
-
-#########################
-# UTILS
-#########################
-
-log() {
-  local now
-  now=$(date '+%Y-%m-%d %H:%M:%S')
-  echo "[$now] [$1] $2" >> $stderrfile
-}
-newline() {
-  echo "" >> $stderrfile
-}
-info() {
-  log "INFO" "$1"
-}
-
-handle_error() {
-  log "ERROR" "An error occurred"
-  newline
-  errcode=1
-  endprocess
-}
-
-endprocess() {
-  info "========================================[end gst $pid]"
-  newline
-
-  if [[ $errcode -eq 1 ]]; then
-    cp "$stderrfile" "$stderrfile.prev"
-  fi
-
-  rm "$stderrfile"
-
-  if [[ "$child" != "" ]]; then
-      kill "$child"
-  fi
-
-  exit $errcode
-}
 
 #########################
 # ENTRYPOINT
@@ -61,10 +28,10 @@ trap handle_error ERR
 rm -f /tmp/gstlaunch*.stderr.prev
 
 newline
-info "========================================[start gst-launch $pid]"
+info "========================================[start $0 $pid]"
 info "GST_ARGS: $*"
 
-/var/packages/VideoStation/target/bin/gst-launch-1.0.orig "$@" 2>> $stderrfile &
+"$path.orig" "$@" 2>> $stderrfile &
 
 child=$!
 wait "$child"
