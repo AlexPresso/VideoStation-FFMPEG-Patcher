@@ -7,7 +7,7 @@
 ffmpeg_version=ffmpeg
 # shellcheck source=/.github/workflows/mock/VERSION
 source "/etc/VERSION"
-# shellcheck source=/patch_config.sh
+# shellcheck source=/utils/patch_config.sh
 source "/var/packages/VideoStation/patch_config.sh" || echo "No patch_config.sh"
 dsm_version="$productversion $buildnumber-$smallfixnumber"
 vs_path=/var/packages/VideoStation

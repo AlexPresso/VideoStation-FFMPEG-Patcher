@@ -20,7 +20,6 @@ wrappers=(
 vs_base_path=/var/packages/VideoStation
 vs_path="$vs_base_path/target"
 libsynovte_path="$vs_path/lib/libsynovte.so"
-vs_scripts=("preuninst")
 cp_base_path=/var/packages/CodecPack
 cp_path="$cp_base_path/target"
 cp_bin_path="$cp_path/bin"
@@ -197,21 +196,6 @@ patch() {
     exit 1
   fi
 
-  for filename in "${vs_scripts[@]}"; do
-    if [[ -f "$vs_base_path/scripts/$filename" ]]; then
-      info "Saving current $filename script as $filename.orig"
-      mv -n "$vs_base_path/scripts/$filename" "$vs_base_path/scripts/$filename.orig"
-
-      download "$filename.sh" "$repo_base_url/$branch/scripts/$filename.sh" "$vs_base_path/scripts/$filename"
-
-      info "Injecting script variables..."
-      repo_full_url="$repo_base_url/$branch"
-      sed -i -e "s|@repo_full_url@|$repo_full_url|" "$vs_base_path/scripts/$filename"
-
-      chmod 755 "$vs_base_path/scripts/$filename"
-    fi
-  done
-
   for filename in "${wrappers[@]}"; do
     if [[ -f "$vs_path/bin/$filename" ]]; then
       info "Saving current $filename as $filename.orig"
@@ -221,6 +205,8 @@ patch() {
       chown root:VideoStation "$vs_path/bin/$filename"
       chmod 750 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
+
+      sed -i -e "s/@package_name@/VideoStation/" "$vs_path/bin/$filename"
     fi
   done
 
@@ -233,24 +219,61 @@ patch() {
         info "Patching CodecPack's $filename"
 
         mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
-        ln -s -f "$vs_path/bin/$target" "$cp_bin_path/$filename"
+        download "$filename.sh" "$repo_base_url/$branch/wrappers/$target.sh" "$cp_bin_path/$filename"
+        chmod 750 "$cp_bin_path/$filename"
+        chmod u+s "$cp_bin_path/$filename"
+
+        sed -i -e "s/@package_name@/CodecPack/" "$cp_bin_path/$filename"
       fi
     done
+
+    if [[ -d "$cp_path/lib/gstreamer" ]]; then
+      gst_lib_path="$cp_path/lib/gstreamer/patch"
+      gst_plugin_path="$cp_path/lib/gstreamer/gstreamer-1.0/patch"
+
+      info "Downloading CodecPack's gstreamer plugins..."
+
+      mkdir "$gst_plugin_path"
+      for plugin in "${gstreamer_plugins[@]}"; do
+        download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$gst_plugin_path/$plugin.so"
+      done
+
+      mkdir "$gst_lib_path"
+      mkdir -p "$gst_lib_path/dri"
+      mkdir -p "$gst_lib_path/x264-10bit"
+      mkdir -p "$gst_lib_path/x265-10bit"
+
+      for lib in "${gstreamer_libs[@]}"; do
+        download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
+      done
+    fi
+
+    mkdir "$cp_base_path/patch"
+    download "CodecPack's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$cp_base_path/patch/patch_config.sh"
+    download "CodecPack's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$cp_base_path/patch/patch_utils.sh"
+
+    info "Setting CodecPack's ffmpeg version to: ffmpeg$ffmpegversion"
+    sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$cp_base_path/patch/patch_config.sh"
   fi
 
   if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
+    gst_lib_path="$vs_path/lib/gstreamer/patch"
+    gst_plugin_path="$vs_path/lib/gstreamer/gstreamer-1.0/patch"
+
     info "Downloading gstreamer plugins..."
 
+    mkdir "$gst_plugin_path"
     for plugin in "${gstreamer_plugins[@]}"; do
-      download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
+      download "Gstreamer plugin: $plugin" "$repo_base_url/$branch/plugins/$plugin.so" "$gst_plugin_path/$plugin.so"
     done
 
-    mkdir -p "$vs_path/lib/gstreamer/dri"
-    mkdir -p "$vs_path/lib/gstreamer/x264-10bit"
-    mkdir -p "$vs_path/lib/gstreamer/x265-10bit"
+    mkdir "$gst_lib_path"
+    mkdir -p "$gst_lib_path/dri"
+    mkdir -p "$gst_lib_path/x264-10bit"
+    mkdir -p "$gst_lib_path/x265-10bit"
 
     for lib in "${gstreamer_libs[@]}"; do
-      download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$vs_path/lib/gstreamer/$lib"
+      download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
     done
 
     info "Saving current GSTOmx configuration..."
@@ -260,10 +283,12 @@ patch() {
     cp -n "$cp_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf"
   fi
 
-  download "patch_config.sh" "$repo_base_url/$branch/patch_config.sh" "$vs_base_path/patch_config.sh"
+  mkdir "$vs_base_path/patch"
+  download "VideoStation's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$vs_base_path/patch/patch_config.sh"
+  download "VideoStation's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$vs_base_path/patch/patch_utils.sh"
 
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
-  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_base_path/patch_config.sh"
+  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_base_path/patch/patch_config.sh"
 
   info "Saving current libsynovte.so as libsynovte.so.orig"
   cp -n "$libsynovte_path" "$libsynovte_path.orig"
@@ -293,32 +318,33 @@ unpatch() {
     mv -T -f "$filename" "${filename::-5}"
   done
 
-  find "$vs_base_path/scripts" -type f -name "*.orig" | while read -r filename; do
-    info "Restoring VideoStation's $filename script"
-    mv -T -f "$filename" "${filename::-5}"
-  done
-
   if [[ -d $cp_bin_path ]]; then
     for file in "${cp_to_patch[@]}"; do
       filename="${file%%:*}"
+      target="${file##*:}"
+
+      rm -f "$cp_bin_path/$target"
 
       if [[ -f  "$cp_bin_path/$filename.orig" ]]; then
         info "Restoring CodecPack's $filename"
         mv -T -f "$cp_bin_path/$filename.orig" "$cp_bin_path/$filename"
       fi
     done
+
+    if [[ -d "$cp_path/lib/gstreamer" ]]; then
+      info "Removing CodecPack gstreamer's patched libraries and plugins"
+      rm -rf "$cp_path/lib/gstreamer/patch"
+      rm -rf "$cp_path/lib/gstreamer/gstreamer-1.0/patch"
+    fi
+
+    info "Remove CodecPack's patch directory"
+    rm -rf "$cp_base_path/patch"
   fi
 
   if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
-    for plugin in "${gstreamer_plugins[@]}"; do
-      info "Removing gstreamer's $plugin plugin"
-      rm -f "$vs_path/lib/gstreamer/gstreamer-1.0/$plugin.so"
-    done
-
-    for lib in "${gstreamer_libs[@]}"; do
-      info "Removing gstreamer's $lib library"
-      rm -f "$vs_path/lib/gstreamer/$lib"
-    done
+    info "Removing VideoStation gstreamer's patched libraries and plugins"
+    rm -rf "$vs_path/lib/gstreamer/patch"
+    rm -rf "$vs_path/lib/gstreamer/gstreamer-1.0/patch"
 
     if [[ -f "$vs_path/etc/gstomx.conf.orig" ]]; then
       info "Restoring GSTOmx configuration..."
@@ -328,8 +354,8 @@ unpatch() {
     fi
   fi
 
-  info "Remove patch config."
-  rm -f "$vs_base_path/patch_config.sh"
+  info "Remove VideoStation's patch directory."
+  rm -rf "$vs_base_path/patch"
 
   restart_packages
   clean
