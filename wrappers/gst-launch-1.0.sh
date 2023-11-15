@@ -6,7 +6,7 @@ export LD_LIBRARY_PATH=/var/packages/@package_name@/target/lib/gstreamer/patch
 # shellcheck source=/utils/patch_utils.sh
 source "/var/packages/VideoStation/patch/patch_utils.sh" 2> /dev/null ||
 source "/var/packages/CodecPack/patch/patch_utils.sh" 2> /dev/null ||
-{ echo "Cannot load patch_utils.sh" >> "gstlaunch-0.stderr.prev" && echo "Cannot load patch_utils.sh" && exit 1; }
+{ echo "Cannot load patch_utils.sh" >> "/tmp/gstlaunch-0.stderr.prev" && echo "Cannot load patch_utils.sh" && exit 1; }
 
 #########################
 # VARS

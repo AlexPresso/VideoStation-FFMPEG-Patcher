@@ -1,13 +1,9 @@
 #!/bin/bash
 
-# shellcheck source=/utils/patch_config.sh
-source "/var/packages/VideoStation/patch/patch_config.sh" 2> /dev/null ||
-source "/var/packages/CodecPack/patch/patch_config.sh" 2> /dev/null
-
 # shellcheck source=/utils/patch_utils.sh
 source "/var/packages/VideoStation/patch/patch_utils.sh" 2> /dev/null ||
 source "/var/packages/CodecPack/patch/patch_utils.sh" 2> /dev/null ||
-{ echo "Cannot load patch_utils.sh" >> "ffmpeg-0.stderr.prev" && echo "Cannot load patch_utils.sh" && exit 1; }
+{ echo "Cannot load patch_utils.sh" >> "/tmp/ffmpeg-0.stderr.prev" && echo "Cannot load patch_utils.sh" && exit 1; }
 
 #########################
 # VARS
@@ -20,6 +16,15 @@ stderrfile="/tmp/ffmpeg-$pid.stderr"
 errcode=0
 path=$(realpath "$0")
 args=()
+
+#########################
+# LOAD CONFIG
+#########################
+
+# shellcheck source=/utils/patch_config.sh
+source "/var/packages/VideoStation/patch/patch_config.sh" 2> /dev/null ||
+source "/var/packages/CodecPack/patch/patch_config.sh" 2> /dev/null ||
+{ echo "Cannot load patch_config.sh" >> "/tmp/ffmpeg-0.stderr.prev" && echo "Cannot load patch_config.sh" && exit 1; }
 
 #########################
 # ENTRYPOINT
