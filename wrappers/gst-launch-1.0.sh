@@ -2,6 +2,7 @@
 
 export GST_DEBUG=1 #1: ERROR (Log fatal errors only).
 export LD_LIBRARY_PATH=/var/packages/@package_name@/target/lib/gstreamer/patch
+export GST_PLUGIN_PATH=/var/packages/@package_name@/target/lib/gstreamer/gstreamer-1.0/patch
 
 # shellcheck source=/utils/patch_utils.sh
 source "/var/packages/VideoStation/patch/patch_utils.sh" 2> /dev/null ||
