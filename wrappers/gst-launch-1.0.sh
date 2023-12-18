@@ -5,8 +5,8 @@ export LD_LIBRARY_PATH=/var/packages/@package_name@/target/lib/gstreamer/patch
 export GST_PLUGIN_PATH=/var/packages/@package_name@/target/lib/gstreamer/gstreamer-1.0/patch
 
 # shellcheck source=/utils/patch_utils.sh
-source "/var/packages/VideoStation/patch/patch_utils.sh" 2> /dev/null ||
-source "/var/packages/CodecPack/patch/patch_utils.sh" 2> /dev/null ||
+source "/var/packages/VideoStation/patch/patch_utils.sh" 2> /tmp/gstlaunch-0.stderr.prev ||
+source "/var/packages/CodecPack/patch/patch_utils.sh" 2> /tmp/gstlaunch-0.stderr.prev ||
 { echo "Cannot load patch_utils.sh" >> "/tmp/gstlaunch-0.stderr.prev" && echo "Cannot load patch_utils.sh" && exit 1; }
 
 #########################
