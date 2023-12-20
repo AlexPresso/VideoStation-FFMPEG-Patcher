@@ -203,7 +203,7 @@ patch() {
 
       download "$filename.sh" "$repo_base_url/$branch/wrappers/$filename.sh" "$vs_path/bin/$filename"
       chown root:VideoStation "$vs_path/bin/$filename"
-      chmod 750 "$vs_path/bin/$filename"
+      chmod 755 "$vs_path/bin/$filename"
       chmod u+s "$vs_path/bin/$filename"
 
       sed -i -e "s/@package_name@/VideoStation/" "$vs_path/bin/$filename"
@@ -220,8 +220,7 @@ patch() {
 
         mv -n "$cp_bin_path/$filename" "$cp_bin_path/$filename.orig"
         download "$filename.sh" "$repo_base_url/$branch/wrappers/$target.sh" "$cp_bin_path/$filename"
-        chmod 750 "$cp_bin_path/$filename"
-        chmod u+s "$cp_bin_path/$filename"
+        chmod 755 "$cp_bin_path/$filename"
 
         sed -i -e "s/@package_name@/CodecPack/" "$cp_bin_path/$filename"
       fi
@@ -251,6 +250,7 @@ patch() {
     mkdir "$cp_base_path/patch"
     download "CodecPack's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$cp_base_path/patch/patch_config.sh"
     download "CodecPack's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$cp_base_path/patch/patch_utils.sh"
+    chmod -R 755 "$cp_base_path/patch"
 
     info "Setting CodecPack's ffmpeg version to: ffmpeg$ffmpegversion"
     sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$cp_base_path/patch/patch_config.sh"
@@ -286,6 +286,7 @@ patch() {
   mkdir "$vs_base_path/patch"
   download "VideoStation's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$vs_base_path/patch/patch_config.sh"
   download "VideoStation's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$vs_base_path/patch/patch_utils.sh"
+  chmod -R 755 "$vs_base_path/patch"
 
   info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
   sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_base_path/patch/patch_config.sh"
