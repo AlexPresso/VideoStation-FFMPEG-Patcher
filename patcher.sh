@@ -207,6 +207,7 @@ patch() {
       chmod u+s "$vs_path/bin/$filename"
 
       sed -i -e "s/@package_name@/VideoStation/" "$vs_path/bin/$filename"
+      sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_path/bin/$filename"
     fi
   done
 
@@ -224,6 +225,7 @@ patch() {
         chmod u+s "$cp_bin_path/$filename"
 
         sed -i -e "s/@package_name@/CodecPack/" "$cp_bin_path/$filename"
+        sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$cp_bin_path/$filename"
       fi
     done
 
@@ -247,13 +249,6 @@ patch() {
         download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
       done
     fi
-
-    mkdir "$cp_base_path/patch"
-    download "CodecPack's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$cp_base_path/patch/patch_config.sh"
-    download "CodecPack's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$cp_base_path/patch/patch_utils.sh"
-
-    info "Setting CodecPack's ffmpeg version to: ffmpeg$ffmpegversion"
-    sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$cp_base_path/patch/patch_config.sh"
   fi
 
   if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
@@ -282,13 +277,6 @@ patch() {
     info "Injecting GSTOmx configuration..."
     cp -n "$cp_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf"
   fi
-
-  mkdir "$vs_base_path/patch"
-  download "VideoStation's patch_config.sh" "$repo_base_url/$branch/utils/patch_config.sh" "$vs_base_path/patch/patch_config.sh"
-  download "VideoStation's patch_utils.sh" "$repo_base_url/$branch/utils/patch_utils.sh" "$vs_base_path/patch/patch_utils.sh"
-
-  info "Setting ffmpeg version to: ffmpeg$ffmpegversion"
-  sed -i -e "s/@ffmpeg_version@/ffmpeg$ffmpegversion/" "$vs_base_path/patch/patch_config.sh"
 
   info "Saving current libsynovte.so as libsynovte.so.orig"
   cp -n "$libsynovte_path" "$libsynovte_path.orig"
@@ -336,9 +324,6 @@ unpatch() {
       rm -rf "$cp_path/lib/gstreamer/patch"
       rm -rf "$cp_path/lib/gstreamer/gstreamer-1.0/patch"
     fi
-
-    info "Remove CodecPack's patch directory"
-    rm -rf "$cp_base_path/patch"
   fi
 
   if [[ -f "$vs_path/bin/gst-launch-1.0" ]]; then
@@ -353,9 +338,6 @@ unpatch() {
       info "GSTOmx configuration was not patched, keeping actual file."
     fi
   fi
-
-  info "Remove VideoStation's patch directory."
-  rm -rf "$vs_base_path/patch"
 
   restart_packages
   clean
