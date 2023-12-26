@@ -114,8 +114,8 @@ info "========================================[start $0 $pid]"
 info "DEFAULT ARGS: $*"
 info "UPDATED ARGS: ${args[*]}"
 
-info "Trying fixed args with $path.orig ..."
-"${path}.orig" "${args[@]}" <&0 2>> $stderrfile &
+info "Trying default args with $path.orig ..."
+"${path}.orig" "$@" <&0 2>> $stderrfile &
 child=$!
 wait "$child"
 
@@ -124,8 +124,8 @@ if [[ $errcode -eq 0 ]]; then
 fi
 
 errcode=0
-info "Trying default args with $path.orig ..."
-"${path}.orig" "$@" <&0 2>> $stderrfile &
+info "Trying fixed args with $path.orig ..."
+"${path}.orig" "${args[@]}" <&0 2>> $stderrfile &
 child=$!
 wait "$child"
 
