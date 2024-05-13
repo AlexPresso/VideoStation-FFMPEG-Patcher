@@ -61,8 +61,8 @@ fix_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -ss)
-        args+=("-ss" "$1" "-noaccurate_seek")
         shift
+        args+=("-ss" "$1" "-noaccurate_seek")
         ;;
 
       -acodec)
