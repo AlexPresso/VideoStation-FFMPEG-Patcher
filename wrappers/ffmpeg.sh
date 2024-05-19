@@ -60,6 +60,11 @@ handle_error() {
 fix_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
+      -ss)
+        shift
+        args+=("-ss" "$1" "-noaccurate_seek")
+        ;;
+
       -acodec)
         shift
         if [[ "$1" = "libfaac" ]]; then
@@ -78,9 +83,9 @@ fix_args() {
           scale_h=$(echo "$arg" | sed -n 's/.*w=\([0-9]\+\):h=\([0-9]\+\).*/\2/p')
 
           if (( scale_w && scale_h )); then
-            arg="scale_vaapi=w=$scale_w:h=$scale_h:format=nv12,hwupload,setsar=sar=1"
+            arg="format=nv12|vaapi,hwupload,scale_vaapi=w=$scale_w:h=$scale_h:format=nv12,setsar=sar=1"
           else
-            arg="scale_vaapi=format=nv12,hwupload,setsar=sar=1"
+            arg="format=nv12|vaapi,hwupload,scale_vaapi=format=nv12,setsar=sar=1"
           fi
         fi
 
