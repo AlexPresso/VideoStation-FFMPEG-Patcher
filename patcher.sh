@@ -269,7 +269,7 @@ patch() {
 
     for lib in "${gstreamer_libs[@]}"; do
       download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
-    done
+      done
 
     info "Saving current GSTOmx configuration..."
     mv -n "$vs_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf.orig"
