@@ -285,6 +285,13 @@ patch() {
   info "Enabling eac3, dts and truehd"
   sed -i -e 's/eac3/3cae/' -e 's/dts/dca/' -e 's/truehd/dheurt/' "$libsynovte_path"
 
+  # Add command to force audio to 6 channels (5.1)
+  info "Adding ffmpeg wrapper to force 5.1 audio"
+  echo '#!/bin/bash' > "$vs_path/bin/ffmpeg"
+  echo 'exec /var/packages/CodecPack/target/bin/ffmpeg.orig -ac 6 "$@"' >> "$vs_path/bin/ffmpeg"
+  chmod 750 "$vs_path/bin/ffmpeg"
+  chmod u+s "$vs_path/bin/ffmpeg"
+
   restart_packages
   clean
 
