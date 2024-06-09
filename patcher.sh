@@ -283,12 +283,12 @@ patch() {
   chown VideoStation:VideoStation "$libsynovte_path.orig"
 
   info "Enabling eac3, dts and truehd"
-  sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
+  sed -i -e 's/eac3/3cae/' -e 's/dts/dca/' -e 's/truehd/dheurt/' "$libsynovte_path"
 
   restart_packages
   clean
 
-  success "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
+  success "Done patching, you can now enjoy your movies in 5.1 ;) (this fork was made by Tom21200)"
 }
 
 unpatch() {
