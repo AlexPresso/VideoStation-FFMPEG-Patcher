@@ -34,6 +34,9 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 To update the wrapper, just unpatch and repatch using the following commands:
 - Unpatch: `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- -a unpatch`
 - Patch: `curl https://raw.githubusercontent.com/AlexPresso/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`
+CUSTOM
+- Unpatch: `curl https://raw.githubusercontent.com/Tom21200/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash -s -- -a unpatch`
+- Patch: `curl https://raw.githubusercontent.com/Tom21200/VideoStation-FFMPEG-Patcher/main/patcher.sh | bash`
 
 ## Usage
 Basic command:  
