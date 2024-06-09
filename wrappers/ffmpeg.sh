@@ -103,14 +103,10 @@ fix_args() {
     shift
   done
 
-  # Force 5.1 audio channels
+  # Force 5.1 audio channels and set codec and bitrate
   args+=("-ac" "6")
-}
-
-apply_audio_fixes() {
-  sed -i 's/args2vs+=("-c:a:0" "$1" "-c:a:1" "libfdk_aac")/args2vs+=("-c:a:0" "libfdk_aac" "-c:a:1" "$1")/gi' "${cp_bin_path}/ffmpeg41" 2>> $stderrfile
-  sed -i 's/args2vs+=("-ac:1" "$1" "-ac:2" "6")/args2vs+=("-ac:1" "6" "-ac:2" "$1")/gi' "${cp_bin_path}/ffmpeg41" 2>> $stderrfile
-  sed -i 's/args2vs+=("-b:a:0" "256k" "-b:a:1" "512k")/args2vs+=("-b:a:0" "512k" "-b:a:1" "256k")/gi' "${cp_bin_path}/ffmpeg41" 2>> $stderrfile
+  args+=("-c:a" "libfdk_aac")
+  args+=("-b:a" "512k")
 }
 
 #########################
@@ -128,8 +124,6 @@ newline
 info "========================================[start $0 $pid]"
 info "DEFAULT ARGS: $*"
 info "UPDATED ARGS: ${args[*]}"
-
-apply_audio_fixes
 
 info "Trying fixed args with $path.orig ..."
 "${path}.orig" "${args[@]}" <&0 2>> $stderrfile &
