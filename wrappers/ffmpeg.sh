@@ -70,7 +70,7 @@ fix_args() {
         if [[ "$1" = "libfaac" ]]; then
           args+=("-acodec" "aac")
         else
-          args+=("-acodec" "libfdk_aac")
+          args+=("-acodec" "libfdk_aac" "-ac" "6")
         fi
         ;;
 
@@ -101,6 +101,9 @@ fix_args() {
 
     shift
   done
+
+  # Force 5.1 audio channels
+  args+=("-ac" "6")
 }
 
 #########################
