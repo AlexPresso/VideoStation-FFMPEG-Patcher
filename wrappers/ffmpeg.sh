@@ -11,6 +11,7 @@ stderrfile="/tmp/ffmpeg-$pid.stderr"
 errcode=0
 path=$(realpath "$0")
 args=()
+cp_bin_path="/var/packages/${ffmpeg_version}/target/bin"
 
 #########################
 # UTILS
@@ -106,6 +107,12 @@ fix_args() {
   args+=("-ac" "6")
 }
 
+apply_audio_fixes() {
+  sed -i 's/args2vs+=("-c:a:0" "$1" "-c:a:1" "libfdk_aac")/args2vs+=("-c:a:0" "libfdk_aac" "-c:a:1" "$1")/gi' "${cp_bin_path}/ffmpeg41" 2>> $stderrfile
+  sed -i 's/args2vs+=("-ac:1" "$1" "-ac:2" "6")/args2vs+=("-ac:1" "6" "-ac:2" "$1")/gi' "${cp_bin_path}/ffmpeg41" 2>> $stderrfile
+  sed -i 's/args2vs+=("-b:a:0" "256k" "-b:a:1" "512k")/args2vs+=("-b:a:0" "512k" "-b:a:1" "256k")/gi' "${cp_bin_path}/ffmpeg41" 2>> $stderrfile
+}
+
 #########################
 # ENTRYPOINT
 #########################
@@ -121,6 +128,8 @@ newline
 info "========================================[start $0 $pid]"
 info "DEFAULT ARGS: $*"
 info "UPDATED ARGS: ${args[*]}"
+
+apply_audio_fixes
 
 info "Trying fixed args with $path.orig ..."
 "${path}.orig" "${args[@]}" <&0 2>> $stderrfile &
