@@ -60,6 +60,7 @@ handle_error() {
 
 fix_args() {
   local has_ac=0
+  local has_c_a=0
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -81,6 +82,7 @@ fix_args() {
         fi
         ;;
       -c:a)
+        has_c_a=1
         shift
         args+=("-c:a" "$1")
         ;;
@@ -109,6 +111,11 @@ fix_args() {
   # Force 5.1 audio channels if -ac is not already specified
   if [[ $has_ac -eq 0 ]]; then
     args+=("-ac" "6")
+  fi
+
+  # Force codec to libfdk_aac if -c:a is not already specified
+  if [[ $has_c_a -eq 0 ]]; then
+    args+=("-c:a" "libfdk_aac" "-b:a" "512k")
   fi
 }
 
