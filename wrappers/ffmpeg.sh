@@ -59,54 +59,57 @@ handle_error() {
 }
 
 fix_args() {
+  local has_ac=0
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -ss)
         shift
         args+=("-ss" "$1" "-noaccurate_seek")
         ;;
-
+      -ac)
+        has_ac=1
+        shift
+        args+=("-ac" "$1")
+        ;;
       -acodec)
         shift
         if [[ "$1" = "libfaac" ]]; then
           args+=("-acodec" "aac")
         else
-          args+=("-acodec" "libfdk_aac" "-ac" "6")
+          args+=("-acodec" "$1")
         fi
         ;;
-
+      -c:a)
+        shift
+        args+=("-c:a" "$1")
+        ;;
       -vf)
         shift
         arg="$1"
-
         if [[ "$arg" =~ "scale_vaapi" ]]; then
           scale_w=$(echo "$arg" | sed -n 's/.*w=\([0-9]\+\):h=\([0-9]\+\).*/\1/p')
           scale_h=$(echo "$arg" | sed -n 's/.*w=\([0-9]\+\):h=\([0-9]\+\).*/\2/p')
-
           if (( scale_w && scale_h )); then
             arg="format=nv12|vaapi,hwupload,scale_vaapi=w=$scale_w:h=$scale_h:format=nv12,setsar=sar=1"
           else
             arg="format=nv12|vaapi,hwupload,scale_vaapi=format=nv12,setsar=sar=1"
           fi
         fi
-
         args+=("-vf" "$arg")
         ;;
-
       -r)
         shift
         ;;
-
       *) args+=("$1") ;;
     esac
-
     shift
   done
 
-  # Force 5.1 audio channels and set codec and bitrate
-  args+=("-ac" "6")
-  args+=("-c:a" "libfdk_aac")
-  args+=("-b:a" "512k")
+  # Force 5.1 audio channels if -ac is not already specified
+  if [[ $has_ac -eq 0 ]]; then
+    args+=("-ac" "6")
+  fi
 }
 
 #########################
