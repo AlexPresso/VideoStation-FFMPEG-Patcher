@@ -113,6 +113,8 @@ fix_args() {
     args+=("-ac" "6")
   fi
 
+  args+=("-filter_complex" "[0:a]channelsplit=channel_layout=5.1[a1][a2][a3][a4][a5][a6];[a1][a2][a3][a4][a5][a6]amerge=inputs=6[a]" -map "[a]")
+
   # Force codec to libfdk_aac if -c:a is not already specified
   if [[ $has_c_a -eq 0 ]]; then
     args+=("-c:a" "libfdk_aac" "-b:a" "512k")
