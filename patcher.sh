@@ -295,7 +295,7 @@ patch() {
   restart_packages
   clean
 
-  success "Done patching, you can now enjoy your movies in 5.1 ;) (this fork v5 was made by Tom21200 and the original by AlexPresso)"
+  success "Done patching, you can now enjoy your movies in 5.1 ;) (this fork was made by Tom21200 and the original by AlexPresso)"
 }
 
 unpatch() {
