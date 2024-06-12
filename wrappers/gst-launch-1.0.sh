@@ -72,13 +72,10 @@ newline
 info "========================================[start $0 $pid]"
 info "GST_ARGS: $*"
 
-# Force 5.1 (untested)
-"$path.orig" "$@" 2>> $stderrfile &
+# Force 5.1 audio
+gst-launch-1.0 playbin uri="file://$1" audio-sink="audioconvert ! audioresample ! audio/x-raw,channels=6 ! alsasink" 2>> $stderrfile &
 
 child=$!
 wait "$child"
-
-# Force 5.1 (untested)
-gst-launch-1.0 uridecodebin uri=file://"$1" ! audioconvert ! audioresample ! audio/x-raw,channels=6 ! alsasink 2>> $stderrfile
 
 endprocess
