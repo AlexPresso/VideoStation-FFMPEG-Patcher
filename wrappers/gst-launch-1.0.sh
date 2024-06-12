@@ -9,9 +9,7 @@ export GST_PLUGIN_PATH=/var/packages/@package_name@/target/lib/gstreamer/gstream
 #########################
 
 pid=$$
-child=""
 stderrfile="/tmp/gstlaunch-$pid.stderr"
-path=$(realpath "$0")
 errcode=0
 
 #########################
@@ -72,8 +70,11 @@ newline
 info "========================================[start $0 $pid]"
 info "GST_ARGS: $*"
 
-# Force 5.1 audio
-gst-launch-1.0 playbin uri="file://$1" audio-sink="audioconvert ! audioresample ! audio/x-raw,channels=6 ! alsasink" 2>> $stderrfile &
+# Get the original pipeline to modify
+original_pipeline="$*"
+
+# Force 5.1 audio output
+gst-launch-1.0 -v $original_pipeline ! audioconvert ! audioresample ! "audio/x-raw,channels=6,layout=interleaved" ! alsasink 2>> $stderrfile &
 
 child=$!
 wait "$child"
