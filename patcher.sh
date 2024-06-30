@@ -130,24 +130,16 @@ check_dependencies() {
   fi
 }
 
-restart_packages() {
-  if [[ -d $cp_bin_path ]]; then
-    if [[ -d "$cp_base_path/etc/gstreamer-1.0" ]]; then
-      info "Clearing CodecPack gstreamer cache..."
-      rm -f "$cp_base_path/etc/gstreamer-1.0/registry.*.bin"
-    fi
-
-    info "Restarting CodecPack..."
-    synopkg restart CodecPack
+clear_cache() {
+  if [[ -d "$cp_base_path/etc/gstreamer-1.0" ]]; then
+    info "Clearing CodecPack gstreamer cache..."
+    rm -f "$cp_base_path/etc/gstreamer-1.0/registry.*.bin"
   fi
 
   if [[ -d "$vs_base_path/etc/gstreamer-1.0" ]]; then
     info "Clearing VideoStation gstreamer cache..."
     rm -f "$vs_base_path/etc/gstreamer-1.0/registry.*.bin"
   fi
-
-  info "Restarting VideoStation..."
-  synopkg restart VideoStation
 }
 
 clean() {
@@ -285,7 +277,7 @@ patch() {
   info "Enabling eac3, dts and truehd"
   sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
 
-  restart_packages
+  clear_cache
   clean
 
   success "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
@@ -339,7 +331,7 @@ unpatch() {
     fi
   fi
 
-  restart_packages
+  clear_cache
   clean
 
   success "Unpatch complete"
