@@ -4,3 +4,5 @@ You can find the changelog here: https://github.com/AlexPresso/VideoStation-FFMP
 /!\ PLEASE FOLLOW THE UPDATE PROCEDURE IN THE CHANGELOG TO UPDATE /!\
 
 As always, please let me know of any issue you could have.
+
+Edit v6

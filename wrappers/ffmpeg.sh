@@ -11,6 +11,7 @@ stderrfile="/tmp/ffmpeg-$pid.stderr"
 errcode=0
 path=$(realpath "$0")
 args=()
+cp_bin_path="/var/packages/${ffmpeg_version}/target/bin"
 
 #########################
 # UTILS
@@ -58,49 +59,66 @@ handle_error() {
 }
 
 fix_args() {
+  local has_ac=0
+  local has_c_a=0
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -ss)
         shift
         args+=("-ss" "$1" "-noaccurate_seek")
         ;;
-
+      -ac)
+        has_ac=1
+        shift
+        args+=("-ac" "$1")
+        ;;
       -acodec)
         shift
         if [[ "$1" = "libfaac" ]]; then
           args+=("-acodec" "aac")
         else
-          args+=("-acodec" "libfdk_aac")
+          args+=("-acodec" "$1")
         fi
         ;;
-
+      -c:a)
+        has_c_a=1
+        shift
+        args+=("-c:a" "$1")
+        ;;
       -vf)
         shift
         arg="$1"
-
         if [[ "$arg" =~ "scale_vaapi" ]]; then
           scale_w=$(echo "$arg" | sed -n 's/.*w=\([0-9]\+\):h=\([0-9]\+\).*/\1/p')
           scale_h=$(echo "$arg" | sed -n 's/.*w=\([0-9]\+\):h=\([0-9]\+\).*/\2/p')
-
           if (( scale_w && scale_h )); then
             arg="format=nv12|vaapi,hwupload,scale_vaapi=w=$scale_w:h=$scale_h:format=nv12,setsar=sar=1"
           else
             arg="format=nv12|vaapi,hwupload,scale_vaapi=format=nv12,setsar=sar=1"
           fi
         fi
-
         args+=("-vf" "$arg")
         ;;
-
       -r)
         shift
         ;;
-
       *) args+=("$1") ;;
     esac
-
     shift
   done
+
+  # Force 5.1 audio channels if -ac is not already specified
+  if [[ $has_ac -eq 0 ]]; then
+    args+=("-ac" "6")
+  fi
+
+  args+=("-filter_complex" "[0:a]channelsplit=channel_layout=5.1[a1][a2][a3][a4][a5][a6];[a1][a2][a3][a4][a5][a6]amerge=inputs=6[a]" -map "[a]")
+
+  # Force codec to libfdk_aac if -c:a is not already specified
+  if [[ $has_c_a -eq 0 ]]; then
+    args+=("-c:a" "libfdk_aac" "-b:a" "512k")
+  fi
 }
 
 #########################
