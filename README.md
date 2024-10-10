@@ -13,7 +13,7 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 ## Dependencies
 - DSM 6.2.2-24922 Update 4 (and above)
 - Video Station 2.4.6-1594 (and above)
-- SynoCommunity ffmpeg 4.x.x, ffmpeg 5.x.x or ffmpeg 6.x.x ([help](https://synocommunity.com/#easy-install))
+- SynoCommunity ffmpeg 4.x.x, ffmpeg 5.x.x, ffmpeg 6.x.x or ffmpeg 7.x.x ([help](https://synocommunity.com/#easy-install))
 
 ## Supported scenarios
 - **[DTS or EAC3 or TrueHD] + [Any non HEVC standard video format]**: ✅
@@ -27,7 +27,7 @@ Huge thanks to [Benjamin Poncet](https://github.com/BenjaminPoncet), [Vincent Fo
 - Connect to your NAS using SSH (admin user required) ([help](https://www.synology.com/en-global/knowledgebase/DSM/tutorial/General_Setup/How_to_login_to_DSM_with_root_permission_via_SSH_Telnet))
 - Use the command `sudo -i` to switch to root user
 - Use the [following](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage) command (Basic command) to execute the patch
-  - Note : Basic command uses **ffmpeg4** by default, if you want to use a different ffmpeg version (i.e. **ffmpeg5** or **ffmpeg6**), please check the command [flags](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage).
+  - Note : Basic command uses **ffmpeg4** by default, if you want to use a different ffmpeg version (i.e. **ffmpeg5**, **ffmpeg6** or **ffmpeg7**), please check the command [flags](https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher#usage).
 - You'll have to re-run the patcher everytime you update VideoStation, Advanced Media Extensions and DSM
 
 ## Update procedure
