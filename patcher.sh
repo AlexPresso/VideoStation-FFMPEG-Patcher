@@ -261,7 +261,7 @@ patch() {
 
     for lib in "${gstreamer_libs[@]}"; do
       download "Gstreamer library: $lib" "$repo_base_url/$branch/libs/$lib" "$gst_lib_path/$lib"
-    done
+      done
 
     info "Saving current GSTOmx configuration..."
     mv -n "$vs_path/etc/gstomx.conf" "$vs_path/etc/gstomx.conf.orig"
@@ -275,12 +275,19 @@ patch() {
   chown VideoStation:VideoStation "$libsynovte_path.orig"
 
   info "Enabling eac3, dts and truehd"
-  sed -i -e 's/eac3/3cae/' -e 's/dts/std/' -e 's/truehd/dheurt/' "$libsynovte_path"
+  sed -i -e 's/eac3/3cae/' -e 's/dts/dca/' -e 's/truehd/dheurt/' "$libsynovte_path"
+
+  # Add command to force audio to 6 channels (5.1)
+  info "Adding ffmpeg wrapper to force 5.1 audio"
+  echo '#!/bin/bash' > "$vs_path/bin/ffmpeg"
+  echo 'exec /var/packages/CodecPack/target/bin/ffmpeg.orig -ac 6 "$@"' >> "$vs_path/bin/ffmpeg"
+  chmod 750 "$vs_path/bin/ffmpeg"
+  chmod u+s "$vs_path/bin/ffmpeg"
 
   clear_cache
   clean
 
-  success "Done patching, you can now enjoy your movies ;) (please add a star to the repo if it worked for you)"
+  success "Done patching, you can now enjoy your movies in 5.1 ;) (this fork was made by Tom21200 and the original by AlexPresso)"
 }
 
 unpatch() {
