@@ -5,6 +5,7 @@
 #########################
 
 ffmpeg_version=@ffmpeg_version@
+ffmpeg_major_version=$(echo "$ffmpeg_version" | grep -oE '[0-9]+')
 pid=$$
 child=""
 stderrfile="/tmp/ffmpeg-$pid.stderr"
@@ -90,6 +91,22 @@ fix_args() {
         fi
 
         args+=("-vf" "$arg")
+        ;;
+
+      -vbsf)
+        shift
+        param="-vbsf"
+        arg="$1"
+
+        if [[ "$ffmpeg_major_version" -gt 4 ]]; then
+          param="-bsf:v"
+
+          if [[ "$arg" == *"repeatheader"* ]]; then
+            arg="${arg//repeatheader/repeat_header=1}"
+          fi
+        fi
+
+        args+=("$param" "$arg")
         ;;
 
       -r)

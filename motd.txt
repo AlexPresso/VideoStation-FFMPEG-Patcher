@@ -1,5 +1,5 @@
-A new version of the wrapper was deployed (v2.6) fixing an issue with offline transcoding.
-You can find the changelog here: https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/releases/tag/2.6
+A new version of the wrapper was deployed (v3.2) fixing an issue with video filters on ffmpeg7.
+You can find the changelog here: https://github.com/AlexPresso/VideoStation-FFMPEG-Patcher/releases/tag/3.2
 
 /!\ PLEASE FOLLOW THE UPDATE PROCEDURE IN THE CHANGELOG TO UPDATE /!\
 
